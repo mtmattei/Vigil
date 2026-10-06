@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Vigil",
+  "display": "standalone",
+  "name": "Vigil",
+  "short_name": "Vigil",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
