@@ -35,6 +35,8 @@ Status: `new` → `assigned` → `fixed` → `verified` (or `wontfix` with a DEC
 | F-022 | P2 | shared (Android) | A8 | Card keeps its pressed overlay after a swipe that starts on it (recorded Toolkit gotcha) | android-settings2.png | Themes/Controls.xaml | fixed | head pass |
 | F-023 | P3 | shared (WASM) | A3 | Message-dialog route and its text are pushed into the address bar (`/Settings/xxxxmessagedialogxxxx?…title=Load sample day…`); later the URL reads `/Board` while Settings shows | wasm-3.png, wasm-4.png | shared | verified (D5) | head pass |
 | F-024 | P2 | NewCase (WASM) | A1 | WASM: Create saves the case but the record does not open; the first tab's URL stays `/Board/NewCase`. Desktop: trace shows `Some(CaseRef)` + Record navigation success=True | wasm-3.png tab title | Presentation/Board | verified (D5: Pistache created → record opened → Back to Board on WASM) | head pass |
+| F-026 | P2 | Monitor strip | A6 | Doses given at the same minute overprint their labels on the drug row ("Dexm"/"Hydr"/"Prop" → garbage) | mcp screenshot 11:58 | Controls/StripRenderer.cs | fixed | break-it r1 |
+| F-027 | P3 | shared | A10 | Board↔Record ×6: managed heap 41→151 MB without finalizers running; with GC + WaitForPendingFinalizers it plateaus at 69–70 MB over 7 cycles, RecordModel live count 2 (no unbounded leak). Strip renderer now disposes its native paints on Unloaded | artifacts/logs/memlog.txt | Controls/VitalsStrip.cs | verified | break-it r1 |
 | F-025 | P3 | Record (Android) | A6 | Framework TextBox clipboard query shows "Vigil pasted from your clipboard" toast on opening Monitor (recorded gotcha) | android-monitor.png | Controls/VitalStepper | new | head pass |
 
 ## Regression lines added by fixers
@@ -52,3 +54,4 @@ Status: `new` → `assigned` → `fixed` → `verified` (or `wontfix` with a DEC
 | Round | Date | P0 | P1 | P2 | P3 | Verified | Notes |
 |---|---|---|---|---|---|---|---|
 | 0 | 2026-10-07 | 0 | 4 | 9 | 5 | 14 | found and fixed during the build; F-014..F-017 open |
+| 1 | 2026-10-07 | 0 | 0 | 3 | 7 | — | heads (Android, WASM) + A1 double nav (1 page, no dup), A13 rapid input (10/10 taps, double Record wrote 1 reading), A10 memory (plateau), A6 strip labels (F-026) |

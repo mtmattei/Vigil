@@ -86,6 +86,9 @@ public partial class App : Application
             );
         MainWindow = builder.Window;
         UiThread.Queue = MainWindow.DispatcherQueue;
+#if DEBUG
+        StartMemoryLog();
+#endif
 
 #if DEBUG
         // UseStudio() carries the App MCP connection on desktop; headless capture runs opt out.
@@ -111,6 +114,28 @@ public partial class App : Application
     }
 
 #if DEBUG
+    /// <summary>
+    /// Diagnosis hook for the break-it memory loop: <c>--vigil-memlog</c> prints the managed heap after a forced
+    /// full collection every 10 s, which separates a real leak from a collector that has not run yet.
+    /// </summary>
+    private void StartMemoryLog()
+    {
+        if (!Environment.GetCommandLineArgs().Contains("--vigil-memlog"))
+        {
+            return;
+        }
+        var timer = MainWindow!.DispatcherQueue.CreateTimer();
+        timer.Interval = TimeSpan.FromSeconds(10);
+        timer.Tick += (_, _) =>
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            Console.WriteLine(
+            $"MEMLOG {DateTime.Now:HH:mm:ss} managed={GC.GetTotalMemory(forceFullCollection: true) / 1_048_576.0:0.0}MB private={Environment.WorkingSet / 1_048_576.0:0.0}MB {Diagnostics.LiveCounter.Report()}");
+        };
+        timer.Start();
+    }
+
     /// <summary>Verification hook: <c>--vigil-seed=sample</c> loads the sample day, <c>--vigil-seed=empty</c> clears the store.</summary>
     private static async Task SeedForVerificationAsync(IServiceProvider services)
     {

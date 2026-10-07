@@ -209,3 +209,13 @@ started because an Actions budget is preventing further use." Last executed run 
 it ran; run 37638904753 green on every head incl. iOS. Needs a user decision (budget, public repo, or accept).
 Surprise: a stale WASM dev server (PID 41684, 11:41) kept port 5000, so a relaunch exited silently and tabs
 loaded old code; `uno_app_start` did not stop it.
+
+## 2026-10-07 12:05 — Break-it round 1 + uno-audit hygiene
+
+Attacks (desktop unless noted): A1 double navigation → 1 Record page; A13 HR "+" ×10 → 94→114 (0 dropped),
+Record ×2 back to back → 1 reading written (14→15); A10 Board↔Record ×7 with `--vigil-memlog` (full GC +
+finalizers every 10 s) → managed 68.6→70.0 MB, RecordModel live 2 (plateau; the earlier 41→151 MB climb was
+finalizer backlog); A6 strip drug row overprint (F-026, fixed by grouping); A4/A8 heads (F-019..F-022 fixed).
+uno-audit: Uno.Sdk 6.7.30 = latest stable on NuGet, .NET 10.0.303; removed dead `ICaseStore.WatchAll`
+(app reloads from the store Signal since D3); no TODO/NotImplemented/Console writes outside the DEBUG memlog;
+strip renderer disposes native paints on Unloaded. Tests 50/50, lint gating 0.

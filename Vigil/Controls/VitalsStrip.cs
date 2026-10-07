@@ -21,7 +21,7 @@ public sealed partial class VitalsStrip : SKCanvasElement
     public static readonly DependencyProperty ReduceMotionProperty = DependencyProperty.Register(
         nameof(ReduceMotion), typeof(bool), typeof(VitalsStrip), new PropertyMetadata(false));
 
-    private readonly StripRenderer _renderer = new();
+    private StripRenderer _renderer = new();
     private DispatcherQueueTimer? _fadeTimer;
     private int _lastCount = -1;
 
@@ -29,13 +29,23 @@ public sealed partial class VitalsStrip : SKCanvasElement
     {
         Loaded += async (_, _) =>
         {
+            // Re-entering the visual tree (navigation back) after Unloaded disposed the renderer.
+            if (_renderer.IsDisposed)
+            {
+                _renderer = new StripRenderer { Data = Data ?? StripData.Empty };
+            }
             SnapshotPalette();
             Invalidate();
             await LoadTypefaceAsync();
             Invalidate();
         };
         ActualThemeChanged += (_, _) => { SnapshotPalette(); Invalidate(); };
-        Unloaded += (_, _) => _fadeTimer?.Stop();
+        Unloaded += (_, _) =>
+        {
+            // Native paints and fonts are released with the page, not left to the finalizer queue.
+            _fadeTimer?.Stop();
+            _renderer.Dispose();
+        };
     }
 
     public StripData Data

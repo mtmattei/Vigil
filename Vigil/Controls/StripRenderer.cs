@@ -29,7 +29,7 @@ internal sealed class StripRenderer : IDisposable
 
     public void Render(SKCanvas canvas, float width, float height)
     {
-        if (Palette is not { } p || width < 120 || height < 120)
+        if (IsDisposed || Palette is not { } p || width < 120 || height < 120)
         {
             return;
         }
@@ -98,14 +98,26 @@ internal sealed class StripRenderer : IDisposable
             canvas.DrawRoundRect(slot, 3, 3, _glyph);
         }
 
-        // Drug row.
-        foreach (var dose in d.Doses)
+        // Drug row. Doses within one marker's width share a marker: "Dexm +2" instead of overprinted labels.
+        var groups = new List<(float X, List<string> Labels)>();
+        foreach (var dose in d.Doses.OrderBy(x => x.Minute))
         {
             if (dose.Minute < first * interval)
             {
                 continue;
             }
             var x = X(dose.Minute);
+            if (groups.Count > 0 && x - groups[^1].X < 44)
+            {
+                groups[^1].Labels.Add(dose.Label);
+            }
+            else
+            {
+                groups.Add((x, [dose.Label]));
+            }
+        }
+        foreach (var (x, labels) in groups)
+        {
             using var tri = new SKPath();
             tri.MoveTo(x - 5, 6);
             tri.LineTo(x + 5, 6);
@@ -114,7 +126,8 @@ internal sealed class StripRenderer : IDisposable
             _fill.Color = p.Drug;
             canvas.DrawPath(tri, _fill);
             _text.Color = p.Drug;
-            canvas.DrawText(dose.Label, x + 7, 15, SKTextAlign.Left, _small, _text);
+            var label = labels.Count == 1 ? labels[0] : $"{labels[0]} +{labels.Count - 1}";
+            canvas.DrawText(label, x + 7, 15, SKTextAlign.Left, _small, _text);
         }
 
         // Readings.
@@ -229,8 +242,11 @@ internal sealed class StripRenderer : IDisposable
         canvas.DrawPath(tri, _fill);
     }
 
+    public bool IsDisposed { get; private set; }
+
     public void Dispose()
     {
+        IsDisposed = true;
         _line.Dispose();
         _glyph.Dispose();
         _fill.Dispose();

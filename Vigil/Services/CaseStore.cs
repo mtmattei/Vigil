@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Uno.Extensions.Reactive;
@@ -12,9 +11,6 @@ public interface ICaseStore
     ValueTask<ImmutableList<Case>> GetAllAsync(CancellationToken ct);
 
     ValueTask<Case?> GetAsync(Guid id, CancellationToken ct);
-
-    /// <summary>All cases now, then again after every change.</summary>
-    IAsyncEnumerable<IImmutableList<Case>> WatchAll(CancellationToken ct);
 
     /// <summary>Raised after every change, and by <see cref="Reload"/>. Feeds use it as their refresh signal.</summary>
     Signal Changed { get; }
@@ -46,8 +42,6 @@ public sealed class JsonCaseStore : ICaseStore
     private readonly IFaultInjection _fault;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private ImmutableDictionary<Guid, Case>? _cache;
-    private TaskCompletionSource _changed = NewSignal();
-
     public Signal Changed { get; } = new();
 
     public void Reload() => Notify();
@@ -61,16 +55,6 @@ public sealed class JsonCaseStore : ICaseStore
     public async ValueTask<ImmutableList<Case>> GetAllAsync(CancellationToken ct) => Order(await LoadAsync(ct));
 
     public async ValueTask<Case?> GetAsync(Guid id, CancellationToken ct) => (await LoadAsync(ct)).GetValueOrDefault(id);
-
-    public async IAsyncEnumerable<IImmutableList<Case>> WatchAll([EnumeratorCancellation] CancellationToken ct)
-    {
-        while (!ct.IsCancellationRequested)
-        {
-            var changed = Volatile.Read(ref _changed);
-            yield return await GetAllAsync(ct);
-            await changed.Task.WaitAsync(ct);
-        }
-    }
 
     public async ValueTask SaveAsync(Case value, CancellationToken ct)
     {
@@ -223,11 +207,12 @@ public sealed class JsonCaseStore : ICaseStore
         File.Move(temp, path, overwrite: true);
     }
 
+    /// <summary>Incremented on every change notification (observable in tests; the Signal itself is not).</summary>
+    public long Version { get; private set; }
+
     private void Notify()
     {
-        Interlocked.Exchange(ref _changed, NewSignal()).TrySetResult();
+        Version++;
         Changed.Raise();
     }
-
-    private static TaskCompletionSource NewSignal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 }

@@ -85,17 +85,13 @@ public class CaseStoreTests
     }
 
     [Test]
-    public async Task WatchAllYieldsAgainAfterAChange()
+    public async Task EveryWriteRaisesTheChangeSignal()
     {
         var store = Store();
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        await using var e = store.WatchAll(cts.Token).GetAsyncEnumerator(cts.Token);
-        (await e.MoveNextAsync()).Should().BeTrue();
-        e.Current.Should().BeEmpty();
-
         await store.SaveAsync(SampleDay.Create(DateTimeOffset.Now)[0], CancellationToken.None);
-        (await e.MoveNextAsync()).Should().BeTrue();
-        e.Current.Should().HaveCount(1);
+        await store.ClearAsync(CancellationToken.None);
+        store.Reload();
+        store.Version.Should().Be(3);
     }
 
     [Test]

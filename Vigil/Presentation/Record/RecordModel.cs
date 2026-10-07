@@ -140,6 +140,10 @@ public partial record CaseView(
 
 public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, IPreferences Preferences, IRecordExporter Exporter, INavigator Navigator)
 {
+#if DEBUG
+    private readonly Diagnostics.LiveCounter _alive = new(nameof(RecordModel));
+#endif
+
     // The stored case; null (deleted or never existed) renders the None template.
     private IFeed<Case> Source { get; } = Feed<Case>.Async(
         async ct => await Store.GetAsync(Ref.Id, ct) is { } c ? Option.Some(c) : Option.None<Case>(), Store.Changed);
