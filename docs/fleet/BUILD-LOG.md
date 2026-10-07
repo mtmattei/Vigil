@@ -219,3 +219,12 @@ finalizer backlog); A6 strip drug row overprint (F-026, fixed by grouping); A4/A
 uno-audit: Uno.Sdk 6.7.30 = latest stable on NuGet, .NET 10.0.303; removed dead `ICaseStore.WatchAll`
 (app reloads from the store Signal since D3); no TODO/NotImplemented/Console writes outside the DEBUG memlog;
 strip renderer disposes native paints on Unloaded. Tests 50/50, lint gating 0.
+
+## 2026-10-07 12:10 — Completeness audit + deploy matrix (Phase 3 reports)
+
+`docs/COMPLETENESS.md`: verdict Complete with gaps (0 Blockers, 9 Majors, 12 Minors). 6/6 screens, 7/7 route
+edges, 43 triggers, 26 commands, 0 simulated. Desktop R on all 7 critical workflows; Android R on 3; WASM R on 3;
+iOS build-only. `docs/DEPLOY.md`: Release builds for every head (local desktop/WASM/Android, CI all six), nothing
+distributed, CI not executing since 20f459e (Actions budget). Band due bar given a visible 6 px track
+(gold-standard Fit & Finish). Loop stops here on a user decision (CI budget).
+Totals: ~4,830 LOC app (C# + XAML), 50 unit tests, 27 findings (24 fixed/verified, 6 open), 5 decisions.

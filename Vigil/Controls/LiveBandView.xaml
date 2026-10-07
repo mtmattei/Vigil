@@ -114,6 +114,8 @@
                      Grid.ColumnSpan="2"
                      Minimum="0"
                      Maximum="100"
+                     MinHeight="6"
+                     Background="{ThemeResource OutlineBrush}"
                      Value="{Binding ProgressPercent}"
                      AutomationProperties.Name="Time until the next reading" />
         <TextBlock Grid.Row="3"
