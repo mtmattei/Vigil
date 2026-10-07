@@ -109,7 +109,7 @@
                     <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.Signalment}" />
                   </StackPanel>
 
-                  <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                  <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                     <StackPanel Padding="20" Spacing="8">
                       <Grid>
                         <TextBlock x:Uid="Record_13" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Pre-anesthetic check" />
@@ -137,7 +137,7 @@
                     </StackPanel>
                   </utu:CardContentControl>
 
-                  <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                  <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                     <StackPanel Padding="20" Spacing="12">
                       <TextBlock x:Uid="Record_19" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="ASA physical status" />
                       <muxc:RadioButtons x:Uid="Record_20" MaxColumns="6"
@@ -252,7 +252,7 @@
                   </Grid.RowDefinitions>
 
                   <utu:CardContentControl Grid.ColumnSpan="{utu:Responsive Narrowest=2, Widest=1}"
-                                          Style="{StaticResource OutlinedCardContentControlStyle}"
+                                          Style="{StaticResource StaticOutlinedCardStyle}"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Top"
                                           IsTabStop="False">
@@ -428,7 +428,7 @@
                     <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.RecoveryAnchorLabel}" />
                   </StackPanel>
 
-                  <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False"
+                  <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False"
                                           Visibility="{Binding Data.IsNotAnesthetized}">
                     <StackPanel Padding="20" Spacing="12">
                       <TextBlock x:Uid="Record_70" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Recovery log" />

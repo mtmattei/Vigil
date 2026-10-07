@@ -128,7 +128,7 @@
                 Command="{Binding Give}"
                 AutomationProperties.Name="Give dose" />
         <!-- Out-of-range confirmation, inline: the safe choice is the filled one. -->
-        <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}"
+        <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}"
                                 HorizontalAlignment="Stretch"
                                 Visibility="{Binding Confirming}"
                                 IsTabStop="False">

@@ -25,10 +25,10 @@
     <ScrollViewer Grid.Row="1">
       <StackPanel Padding="{utu:Responsive Narrow='16,8,16,32', Wide='32,16,32,40'}" Spacing="24" MaxWidth="720" HorizontalAlignment="Stretch">
 
-        <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+        <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
           <StackPanel Padding="20" Spacing="16">
             <TextBlock x:Uid="SettingsAppearance" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Appearance" />
-            <muxc:RadioButtons x:Uid="SettingsTheme" Header="Theme" MaxColumns="3" SelectedIndex="{Binding ThemeIndex, Mode=TwoWay}">
+            <muxc:RadioButtons x:Uid="SettingsTheme" Header="Theme" MaxColumns="{utu:Responsive Narrowest=1, Normal=3}" SelectedIndex="{Binding ThemeIndex, Mode=TwoWay}">
               <RadioButton x:Uid="SettingsThemeSystem" Content="System" />
               <RadioButton x:Uid="SettingsThemeLight" Content="Paper (light)" />
               <RadioButton x:Uid="SettingsThemeDark" Content="Theatre (dark)" />
@@ -51,7 +51,7 @@
           </StackPanel>
         </utu:CardContentControl>
 
-        <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+        <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
           <StackPanel Padding="20" Spacing="16">
             <TextBlock x:Uid="SettingsLanguageTitle" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Language" />
             <muxc:RadioButtons x:Uid="SettingsLanguage" Header="Language (applies after restart)" MaxColumns="2" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}">
@@ -62,7 +62,7 @@
           </StackPanel>
         </utu:CardContentControl>
 
-        <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+        <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
           <StackPanel Padding="20" Spacing="16">
             <TextBlock x:Uid="SettingsMonitoring" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Monitoring" />
             <muxc:RadioButtons x:Uid="SettingsInterval" Header="Reading interval" MaxColumns="3" SelectedIndex="{Binding IntervalIndex, Mode=TwoWay}">
@@ -75,7 +75,7 @@
           </StackPanel>
         </utu:CardContentControl>
 
-        <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+        <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
           <StackPanel Padding="20" Spacing="12">
             <TextBlock x:Uid="SettingsData" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Records on this tablet" />
             <TextBlock x:Uid="SettingsDataHelp" Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"

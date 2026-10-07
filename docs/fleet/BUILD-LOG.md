@@ -182,3 +182,18 @@ Surprises:
 - The language notice landed in the Records card (shared state); now its own line.
 - The system message dialog keeps Fluent chrome (blue accent) inside the Material app: polish finding.
 Threads: 0.
+
+## 2026-10-07 11:52 — Step 8: persistence + head passes (Android emulator, WebAssembly)
+
+Android (emulator `chefs36`, API 36, 1080×2400, Release APK 219 s, 55.7 MB): launch, fonts (R1 closed on Android),
+Settings, Load sample day through the native dialog, Board with overdue band, Monitor strip on `SKCanvasElement`
+(R2 closed on Android), Record reading at 11:39 → `am force-stop` → relaunch → reading present, slot back to
+"next 4:42" (persistence proven). Evidence: `artifacts/shots/android-*.png`.
+WebAssembly (Debug, Edge, App MCP attached): Board, Settings, New case → Create (Wasabi); a second tab (fresh
+page load) listed Wasabi from browser storage (R5 closed). App MCP screenshots time out on WASM and Edge window
+captures are stale (background throttling), so the strip on WASM has no pixel evidence (R2 on WASM: not captured).
+Desktop: restart persistence proven earlier (15th reading after relaunch); New case → Record hand-off traced
+(`Some(CaseRef)`, navigation success=True).
+Findings: F-019..F-025 (phone clipping ×3 fixed, Android card washout fixed with the recorded workaround,
+WASM route-in-URL leak, WASM Create does not open the record, Android clipboard toast).
+Tests 50/50. Lint gating 0 (1 TEMPLATE + 1 WORKAROUND, both annotated).

@@ -71,6 +71,7 @@
                          Text="No patient under anesthesia" />
               <TextBlock x:Uid="Board_5" Style="{StaticResource BodySmall}"
                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         TextWrapping="WrapWholeWords"
                          Text="Induce a case from its Pre-op tab and it appears here with its reading countdown." />
             </StackPanel>
           </DataTemplate>
@@ -94,11 +95,15 @@
     <!-- Case list -->
     <ScrollViewer Grid.Row="2">
       <StackPanel Padding="{utu:Responsive Narrow='16,16,16,24', Wide='32,24,32,32'}" Spacing="16" MaxWidth="1280">
-        <Grid ColumnSpacing="12">
+        <Grid ColumnSpacing="12" RowSpacing="12">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
           <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
             <TextBlock x:Uid="Board_8" Style="{StaticResource HeadlineMedium}"
                        Foreground="{ThemeResource OnBackgroundBrush}"
@@ -112,7 +117,10 @@
               <utu:Chip x:Uid="Board_10" Content="All" Command="{Binding ShowAll}" AutomationProperties.Name="Show all cases" />
             </utu:ChipGroup>
           </StackPanel>
-          <Button x:Uid="Board_11" Grid.Column="1"
+          <Button x:Uid="Board_11" Grid.Row="{utu:Responsive Narrowest=1, Normal=0}"
+                  Grid.Column="{utu:Responsive Narrowest=0, Normal=1}"
+                  Grid.ColumnSpan="{utu:Responsive Narrowest=2, Normal=1}"
+                  HorizontalAlignment="{utu:Responsive Narrowest=Stretch, Normal=Right}"
                   Style="{StaticResource FilledButtonStyle}"
                   Command="{Binding NewCase}"
                   AutomationProperties.Name="New case">
@@ -207,7 +215,7 @@
             <DataTemplate>
               <!-- Skeleton: three case cards at the populated card's size. -->
               <StackPanel Spacing="16">
-                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                   <StackPanel Padding="16" Spacing="10">
                     <Rectangle Width="120" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
                     <Rectangle Width="220" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
@@ -215,7 +223,7 @@
                     <Rectangle Width="100" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
                   </StackPanel>
                 </utu:CardContentControl>
-                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                   <StackPanel Padding="16" Spacing="10">
                     <Rectangle Width="140" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
                     <Rectangle Width="200" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
@@ -223,7 +231,7 @@
                     <Rectangle Width="90" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
                   </StackPanel>
                 </utu:CardContentControl>
-                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                   <StackPanel Padding="16" Spacing="10">
                     <Rectangle Width="100" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
                     <Rectangle Width="230" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
@@ -237,7 +245,7 @@
 
           <mvux:FeedView.NoneTemplate>
             <DataTemplate>
-              <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+              <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                 <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
                   <TextBlock x:Uid="Board_14" Style="{StaticResource TitleLarge}"
                              Foreground="{ThemeResource OnSurfaceBrush}"
@@ -257,7 +265,7 @@
 
           <mvux:FeedView.ErrorTemplate>
             <DataTemplate>
-              <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+              <utu:CardContentControl Style="{StaticResource StaticOutlinedCardStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                 <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
                   <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE783;" FontSize="20" Foreground="{ThemeResource ErrorBrush}" />

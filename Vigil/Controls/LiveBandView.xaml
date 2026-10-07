@@ -68,6 +68,10 @@
           <TextBlock Style="{StaticResource BodySmall}"
                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
                      Text="{Binding Band}" />
+        <TextBlock Style="{StaticResource LabelLarge}"
+                   Foreground="{ThemeResource PrimaryBrush}"
+                   Visibility="{Binding HasOthers}"
+                   Text="{Binding Others}" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">

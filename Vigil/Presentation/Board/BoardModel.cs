@@ -60,8 +60,11 @@ public partial record LiveCase(
     string NextText,
     DueState Due,
     double Progress,
-    string LastReading) : CaseRef(Id)
+    string LastReading,
+    string Others) : CaseRef(Id)
 {
+    public bool HasOthers => Others.Length > 0;
+
     /// <summary>Visual state name for <c>utu:VisualStateManagerExtensions.States</c>.</summary>
     public string DueStateName => Due.ToString();
 
@@ -69,10 +72,16 @@ public partial record LiveCase(
 
     public static LiveCase? From(IImmutableList<Case> cases, DateTimeOffset now, TimeSpan interval)
     {
-        if (cases.FirstOrDefault(c => c.Status == CaseStatus.Anesthetized) is not { } c)
+        var live = cases.Where(x => x.Status == CaseStatus.Anesthetized).ToList();
+        if (live.Count == 0)
         {
             return null;
         }
+        // The band follows the most recent induction; anyone else asleep is named so no patient is out of sight.
+        var c = live[0];
+        var others = live.Count > 1
+            ? Loc.F("Board_AlsoUnder", "Also under anesthesia: {0}", string.Join(", ", live.Skip(1).Select(x => x.Patient.Name)))
+            : "";
         var p = c.Patient;
         var remaining = Schedule.Remaining(c, interval, now) ?? TimeSpan.Zero;
         var due = Schedule.State(c, interval, now);
@@ -87,7 +96,8 @@ public partial record LiveCase(
             Schedule.Clock(remaining.Duration()),
             due,
             Schedule.Progress(c, interval, now),
-            last is null ? Loc.T("Readings_None", "No readings yet") : Loc.F("Board_LastReading", "Last {0:HH:mm} · HR {1} · SpO₂ {2} · MAP {3}", last.At, last.Hr?.ToString() ?? "—", last.SpO2?.ToString() ?? "—", last.EffectiveMap?.ToString() ?? "—"));
+            last is null ? Loc.T("Readings_None", "No readings yet") : Loc.F("Board_LastReading", "Last {0:HH:mm} · HR {1} · SpO₂ {2} · MAP {3}", last.At, last.Hr?.ToString() ?? "—", last.SpO2?.ToString() ?? "—", last.EffectiveMap?.ToString() ?? "—"),
+            others);
     }
 }
 
