@@ -26,10 +26,10 @@ public sealed class RecordExporter : IRecordExporter
             var file = await picker.PickSaveFileAsync();
             if (file is null)
             {
-                return "Export cancelled.";
+                return Loc.T("Export_Cancelled", "Export cancelled.");
             }
             await FileIO.WriteTextAsync(file, csv);
-            return $"Saved {file.Name}.";
+            return Loc.F("Export_Saved", "Saved {0}.", file.Name);
         });
     }
 
@@ -41,7 +41,7 @@ public sealed class RecordExporter : IRecordExporter
             var package = new DataPackage();
             package.SetText(text);
             Clipboard.SetContent(package);
-            return Task.FromResult("Summary copied: paste it into the patient file.");
+            return Task.FromResult(Loc.T("Export_Copied", "Summary copied: paste it into the patient file."));
         });
     }
 

@@ -15,7 +15,7 @@ public partial record CaseRef(Guid Id);
 public partial record Patient(string Name, Species Species, string Breed, decimal WeightKg, decimal AgeYears, string Owner)
 {
     /// <summary>"Canine · Labrador retriever", skipping a blank breed.</summary>
-    public string SpeciesAndBreed => string.IsNullOrWhiteSpace(Breed) ? Species.ToString() : $"{Species} · {Breed}";
+    public string SpeciesAndBreed => string.IsNullOrWhiteSpace(Breed) ? Loc.Species(Species) : $"{Loc.Species(Species)} · {Breed}";
 }
 
 public partial record PreopCheck(
@@ -34,7 +34,7 @@ public partial record PreopCheck(
 
     public bool IsComplete => DoneCount == 5 && Asa is >= 1 and <= 5;
 
-    public string AsaLabel => Asa is >= 1 and <= 5 ? $"ASA {Roman(Asa)}{(AsaEmergency ? "E" : "")}" : "ASA —";
+    public string AsaLabel => Asa is >= 1 and <= 5 ? $"ASA {Roman(Asa)}{(AsaEmergency ? "E" : "")}" : Loc.T("Asa_NotSet", "ASA —");
 
     public static string Roman(int asa) => asa switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", 5 => "V", _ => "" };
 }

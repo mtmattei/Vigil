@@ -15,11 +15,11 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <utu:NavigationBar Content="Vigil"
+    <utu:NavigationBar x:Uid="Board_1" Content="Vigil"
                        Background="{ThemeResource BackgroundBrush}"
                        AutomationProperties.Name="Vigil, today's surgical board">
       <utu:NavigationBar.PrimaryCommands>
-        <AppBarButton Label="Settings"
+        <AppBarButton x:Uid="Board_2" Label="Settings"
                       AutomationProperties.Name="Settings"
                       uen:Navigation.Request="Settings">
           <AppBarButton.Icon>
@@ -63,13 +63,13 @@
             <StackPanel Padding="{utu:Responsive Narrow='16,16', Wide='32,20'}"
                         Spacing="8"
                         VerticalAlignment="Center">
-              <TextBlock Style="{StaticResource LabelLarge}"
+              <TextBlock x:Uid="Board_3" Style="{StaticResource LabelLarge}"
                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
                          Text="UNDER ANESTHESIA" />
-              <TextBlock Style="{StaticResource HeadlineMedium}"
+              <TextBlock x:Uid="Board_4" Style="{StaticResource HeadlineMedium}"
                          Foreground="{ThemeResource OnSurfaceBrush}"
                          Text="No patient under anesthesia" />
-              <TextBlock Style="{StaticResource BodySmall}"
+              <TextBlock x:Uid="Board_5" Style="{StaticResource BodySmall}"
                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
                          Text="Induce a case from its Pre-op tab and it appears here with its reading countdown." />
             </StackPanel>
@@ -79,10 +79,10 @@
         <mvux:FeedView.ErrorTemplate>
           <DataTemplate>
             <StackPanel Padding="{utu:Responsive Narrow='16,16', Wide='32,20'}" Spacing="8" VerticalAlignment="Center">
-              <TextBlock Style="{StaticResource LabelLarge}"
+              <TextBlock x:Uid="Board_6" Style="{StaticResource LabelLarge}"
                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
                          Text="UNDER ANESTHESIA" />
-              <TextBlock Style="{StaticResource HeadlineMedium}"
+              <TextBlock x:Uid="Board_7" Style="{StaticResource HeadlineMedium}"
                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
                          Text="Live case unavailable" />
             </StackPanel>
@@ -100,7 +100,7 @@
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
           <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-            <TextBlock Style="{StaticResource HeadlineMedium}"
+            <TextBlock x:Uid="Board_8" Style="{StaticResource HeadlineMedium}"
                        Foreground="{ThemeResource OnBackgroundBrush}"
                        VerticalAlignment="Center"
                        Text="Cases" />
@@ -108,17 +108,17 @@
                            SelectionMode="Single"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0">
-              <utu:Chip Content="Today" IsChecked="True" Command="{Binding ShowToday}" AutomationProperties.Name="Show today's cases" />
-              <utu:Chip Content="All" Command="{Binding ShowAll}" AutomationProperties.Name="Show all cases" />
+              <utu:Chip x:Uid="Board_9" Content="Today" IsChecked="True" Command="{Binding ShowToday}" AutomationProperties.Name="Show today's cases" />
+              <utu:Chip x:Uid="Board_10" Content="All" Command="{Binding ShowAll}" AutomationProperties.Name="Show all cases" />
             </utu:ChipGroup>
           </StackPanel>
-          <Button Grid.Column="1"
+          <Button x:Uid="Board_11" Grid.Column="1"
                   Style="{StaticResource FilledButtonStyle}"
                   Command="{Binding NewCase}"
                   AutomationProperties.Name="New case">
             <StackPanel Orientation="Horizontal" Spacing="8">
               <SymbolIcon Symbol="Add" />
-              <TextBlock Text="New case" />
+              <TextBlock x:Uid="Board_12" Text="New case" />
             </StackPanel>
           </Button>
         </Grid>
@@ -131,7 +131,7 @@
                        IsTabStop="False">
           <mvux:FeedView.ValueTemplate>
             <DataTemplate>
-              <muxc:ItemsRepeater ItemsSource="{Binding Data}"
+              <muxc:ItemsRepeater x:Uid="Board_13" ItemsSource="{Binding Data}"
                                   uen:Navigation.Request="Record"
                                   AutomationProperties.Name="Cases">
                 <muxc:ItemsRepeater.Layout>
@@ -239,14 +239,14 @@
             <DataTemplate>
               <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                 <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
-                  <TextBlock Style="{StaticResource TitleLarge}"
+                  <TextBlock x:Uid="Board_14" Style="{StaticResource TitleLarge}"
                              Foreground="{ThemeResource OnSurfaceBrush}"
                              Text="No cases today. Start the first one." />
-                  <TextBlock Style="{StaticResource BodyMedium}"
+                  <TextBlock x:Uid="Board_15" Style="{StaticResource BodyMedium}"
                              Foreground="{ThemeResource OnSurfaceVariantBrush}"
                              TextWrapping="WrapWholeWords"
                              Text="A case holds one anesthetic procedure: pre-op check, doses, vitals every five minutes, recovery and sign-off." />
-                  <Button Style="{StaticResource OutlinedButtonStyle}"
+                  <Button x:Uid="Board_16" Style="{StaticResource OutlinedButtonStyle}"
                           HorizontalAlignment="Left"
                           Content="New case"
                           Command="{Binding DataContext.NewCase, ElementName=CasesFeed}" />
@@ -261,7 +261,7 @@
                 <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
                   <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE783;" FontSize="20" Foreground="{ThemeResource ErrorBrush}" />
-                    <TextBlock Style="{StaticResource TitleLarge}"
+                    <TextBlock x:Uid="Board_17" Style="{StaticResource TitleLarge}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
                                Text="Couldn't read saved records." />
                   </StackPanel>
@@ -270,7 +270,7 @@
                              TextWrapping="WrapWholeWords"
                              Text="{Binding Message}" />
                   <!-- ErrorTemplate DataContext is the Exception: reach the page model by ElementName. -->
-                  <Button Style="{StaticResource OutlinedButtonStyle}"
+                  <Button x:Uid="Board_18" Style="{StaticResource OutlinedButtonStyle}"
                           HorizontalAlignment="Left"
                           Content="Retry"
                           AutomationProperties.Name="Retry reading records"

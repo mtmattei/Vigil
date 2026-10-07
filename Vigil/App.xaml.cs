@@ -65,12 +65,14 @@ public partial class App : Application
                 )
                 // Enable localization (see appsettings.json for supported languages)
                 .UseLocalization()
+                .UseThemeSwitching()
                 .ConfigureServices((context, services) =>
                 {
                     var fault = FaultInjection.FromEnvironment();
                     services.AddSingleton<IFaultInjection>(fault);
                     services.AddSingleton<IClock, SystemClock>();
-                    services.AddSingleton<IPreferences, Preferences>();
+                    services.AddSingleton<IPreferences>(_ => new Preferences(
+                        Path.Combine(ApplicationData.Current.LocalFolder.Path, "preferences.json")));
                     services.AddSingleton<IFormulary, EmbeddedFormulary>();
                     services.AddSingleton<IRecordExporter, RecordExporter>();
                     services.AddSingleton<ICaseStore>(_ => new JsonCaseStore(
@@ -94,6 +96,7 @@ public partial class App : Application
             async () =>
             {
                 var host = builder.Build();
+                Loc.Localizer = host.Services.GetRequiredService<IStringLocalizer>();
 #if DEBUG
                 await SeedForVerificationAsync(host.Services);
 #endif
@@ -133,7 +136,8 @@ public partial class App : Application
             new ViewMap<NewCasePage, NewCaseModel>(ResultData: typeof(CaseRef)),
             new DataViewMap<RecordPage, RecordModel, CaseRef>(),
             new DataViewMap<DosePage, DoseModel, CaseRef>(),
-            new DataViewMap<SignOffPage, SignOffModel, CaseRef>()
+            new DataViewMap<SignOffPage, SignOffModel, CaseRef>(),
+            new ViewMap<SettingsPage, SettingsModel>()
         );
 
         routes.Register(
@@ -141,7 +145,8 @@ public partial class App : Application
             new RouteMap("NewCase", View: views.FindByViewModel<NewCaseModel>()),
             new RouteMap("Record", View: views.FindByViewModel<RecordModel>()),
             new RouteMap("Dose", View: views.FindByViewModel<DoseModel>()),
-            new RouteMap("SignOff", View: views.FindByViewModel<SignOffModel>())
+            new RouteMap("SignOff", View: views.FindByViewModel<SignOffModel>()),
+            new RouteMap("Settings", View: views.FindByViewModel<SettingsModel>())
         );
     }
 }

@@ -24,7 +24,7 @@ public partial record DoseModel(CaseRef Ref, ICaseStore Store, IFormulary Formul
 
     public IState<int> RouteIndex => State.Value(this, () => 0);
 
-    public IFeed<string> Patient => Source.Select(c => $"{c.Patient.Name} · {c.Patient.Species} · {c.Patient.WeightKg:0.0} kg");
+    public IFeed<string> Patient => Source.Select(c => $"{c.Patient.Name} · {Loc.Species(c.Patient.Species)} · {c.Patient.WeightKg:0.0} kg");
 
     /// <summary>None until a drug is picked; invalid mg/kg stays None and the sheet says why.</summary>
     public IFeed<DoseCalc> Calc => Feed.Combine(Source, Selected, MgPerKg)
@@ -36,10 +36,10 @@ public partial record DoseModel(CaseRef Ref, ICaseStore Store, IFormulary Formul
 
     public IFeed<bool> NotConfirming => Confirming.Select(c => !c);
 
-    public IFeed<string> ConfirmTitle => Calc.Select(c => $"Give {c.MgPerKg:0.###} mg/kg?");
+    public IFeed<string> ConfirmTitle => Calc.Select(c => Loc.F("Dose_ConfirmTitle", "Give {0:0.###} mg/kg?", c.MgPerKg));
 
     public IFeed<string> ConfirmText => Feed.Combine(Calc, Selected)
-        .Select(x => $"The reference range for {x.Item2.Name} is {x.Item1.ReferenceText}. {x.Item1.MgPerKg:0.###} mg/kg is {x.Item1.VolumeText}.");
+        .Select(x => Loc.F("Dose_ConfirmText", "The reference range for {0} is {1}. {2:0.###} mg/kg is {3}.", x.Item2.Name, x.Item1.ReferenceText, x.Item1.MgPerKg, x.Item1.VolumeText));
 
     /// <summary>
     /// Set by Give when the dose is outside the reference range: the sheet shows an inline confirmation.
@@ -72,7 +72,7 @@ public partial record DoseModel(CaseRef Ref, ICaseStore Store, IFormulary Formul
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException or KeyNotFoundException)
         {
-            await Error.UpdateAsync(_ => $"Not saved: {ex.Message}", ct);
+            await Error.UpdateAsync(_ => Loc.F("Error_NotSaved", "Not saved: {0}", ex.Message), ct);
             return;
         }
         await Navigator.NavigateBackAsync(this, cancellation: ct);

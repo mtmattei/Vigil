@@ -27,27 +27,27 @@ public partial record CaseDraft(
         var errors = ImmutableList.CreateBuilder<string>();
         if (string.IsNullOrWhiteSpace(Name))
         {
-            errors.Add("Enter the patient's name.");
+            errors.Add(Loc.T("NewCase_NameRequired", "Enter the patient's name."));
         }
         if (WeightKg is not decimal w || w is < 0.1m or > 150m)
         {
-            errors.Add("Enter a weight between 0.1 and 150 kg: every dose is calculated from it.");
+            errors.Add(Loc.T("NewCase_WeightRequired", "Enter a weight between 0.1 and 150 kg: every dose is calculated from it."));
         }
         if (!string.IsNullOrWhiteSpace(AgeText) && AgeYears is null)
         {
-            errors.Add("Age must be a number of years.");
+            errors.Add(Loc.T("NewCase_AgeNumber", "Age must be a number of years."));
         }
         if (string.IsNullOrWhiteSpace(Procedure))
         {
-            errors.Add("Enter the procedure.");
+            errors.Add(Loc.T("NewCase_ProcedureRequired", "Enter the procedure."));
         }
         if (string.IsNullOrWhiteSpace(Veterinarian))
         {
-            errors.Add("Enter the veterinarian.");
+            errors.Add(Loc.T("NewCase_VetRequired", "Enter the veterinarian."));
         }
         if (string.IsNullOrWhiteSpace(Technician))
         {
-            errors.Add("Enter the technician running anesthesia.");
+            errors.Add(Loc.T("NewCase_TechRequired", "Enter the technician running anesthesia."));
         }
         return errors.ToImmutable();
     }
@@ -89,7 +89,7 @@ public partial record NewCaseModel(ICaseStore Store, IClock Clock, INavigator Na
         }
         catch (IOException ex)
         {
-            await SaveError.UpdateAsync(_ => $"The case could not be saved: {ex.Message} Your entries are kept; try again.", ct);
+            await SaveError.UpdateAsync(_ => Loc.F("NewCase_SaveFailed", "The case could not be saved: {0} Your entries are kept; try again.", ex.Message), ct);
             return;
         }
         await Navigator.NavigateBackWithResultAsync(this, data: new CaseRef(created.Id), cancellation: ct);

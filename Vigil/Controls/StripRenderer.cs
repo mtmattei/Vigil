@@ -171,7 +171,7 @@ internal sealed class StripRenderer : IDisposable
         _text.Color = p.Muted;
         var lx = plotRight;
         const float ly = 20;
-        foreach (var (label, kind) in new[] { ("T°", 4), ("SpO₂", 3), ("EtCO₂", 2), ("BP", 1), ("HR", 0) })
+        foreach (var (label, kind) in new[] { ("T°", 4), ("SpO₂", 3), ("EtCO₂", 2), (Loc.T("Strip_LegendBp", "BP"), 1), (Loc.T("Strip_LegendHr", "HR"), 0) })
         {
             var w = _small.MeasureText(label);
             canvas.DrawText(label, lx, ly + 4, SKTextAlign.Right, _small, _text);

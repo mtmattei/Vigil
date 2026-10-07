@@ -60,29 +60,29 @@ public partial record VitalsDraft(
         {
             if (!string.IsNullOrWhiteSpace(text) && ParseInt(text) is null)
             {
-                errors.Add($"{label} must be a whole number.");
+                errors.Add(Loc.F("Validation_WholeNumber", "{0} must be a whole number.", label));
             }
         }
         void Dec(string label, string text)
         {
             if (!string.IsNullOrWhiteSpace(text) && ParseDec(text) is null)
             {
-                errors.Add($"{label} must be a number.");
+                errors.Add(Loc.F("Validation_Number", "{0} must be a number.", label));
             }
         }
-        Int("Heart rate", Hr);
-        Int("Respiratory rate", Rr);
+        Int(Loc.T("Vital_HeartRate", "Heart rate"), Hr);
+        Int(Loc.T("Vital_RespiratoryRate", "Respiratory rate"), Rr);
         Int("SpO₂", SpO2);
         Int("EtCO₂", EtCo2);
-        Int("Systolic", Sys);
-        Int("Diastolic", Dia);
+        Int(Loc.T("Vital_Systolic", "Systolic"), Sys);
+        Int(Loc.T("Vital_Diastolic", "Diastolic"), Dia);
         Int("MAP", Map);
-        Dec("Temperature", TempC);
-        Dec("Vaporizer", Vaporizer);
-        Dec("O₂ flow", O2);
+        Dec(Loc.T("Vital_Temperature", "Temperature"), TempC);
+        Dec(Loc.T("Vital_Vaporizer", "Vaporizer"), Vaporizer);
+        Dec(Loc.T("Vital_O2Flow", "O₂ flow"), O2);
         if (errors.Count == 0 && new[] { Hr, Rr, SpO2, EtCo2, Sys, Dia, Map, TempC }.All(string.IsNullOrWhiteSpace))
         {
-            errors.Add("Enter at least one vital sign.");
+            errors.Add(Loc.T("Validation_OneVital", "Enter at least one vital sign."));
         }
         return errors.ToImmutable();
     }
@@ -118,14 +118,14 @@ public partial record DraftFlags(string Hr, string Rr, string SpO2, string EtCo2
     {
         string F(VitalKind kind, decimal? v) => Vitals.Classify(species, kind, v) switch
         {
-            RangeClass.High => "▲ High",
-            RangeClass.Low => "▼ Low",
+            RangeClass.High => Loc.T("Flag_High", "▲ High"),
+            RangeClass.Low => Loc.T("Flag_Low", "▼ Low"),
             _ => "",
         };
         var sys = VitalsDraft.ParseInt(d.Sys);
         var dia = VitalsDraft.ParseInt(d.Dia);
         var map = VitalsDraft.ParseInt(d.Map) ?? Vitals.DeriveMap(sys, dia);
-        var hint = VitalsDraft.ParseInt(d.Map) is null && map is int m ? $"calc {m}" : "";
+        var hint = VitalsDraft.ParseInt(d.Map) is null && map is int m ? Loc.F("Map_CalcHint", "calc {0}", m) : "";
         return new DraftFlags(
             F(VitalKind.Hr, VitalsDraft.ParseInt(d.Hr)),
             F(VitalKind.Rr, VitalsDraft.ParseInt(d.Rr)),

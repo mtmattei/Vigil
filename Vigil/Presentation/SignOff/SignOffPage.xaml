@@ -12,9 +12,9 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <utu:NavigationBar Content="Sign off" Background="{ThemeResource SurfaceBrush}">
+    <utu:NavigationBar x:Uid="SignOff_1" Content="Sign off" Background="{ThemeResource SurfaceBrush}">
       <utu:NavigationBar.MainCommand>
-        <AppBarButton Label="Cancel" AutomationProperties.Name="Close sign-off" Command="{Binding Cancel}">
+        <AppBarButton x:Uid="SignOff_2" Label="Cancel" AutomationProperties.Name="Close sign-off" Command="{Binding Cancel}">
           <AppBarButton.Icon>
             <SymbolIcon Symbol="Cancel" />
           </AppBarButton.Icon>
@@ -33,12 +33,12 @@
                 <!-- Anchor: the signed summary at display scale. -->
                 <StackPanel Orientation="Horizontal" Spacing="24">
                   <StackPanel>
-                    <TextBlock Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.Duration}" AutomationProperties.Name="Anesthesia duration" />
-                    <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="ANESTHESIA" />
+                    <TextBlock x:Uid="SignOff_3" Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.Duration}" AutomationProperties.Name="Anesthesia duration" />
+                    <TextBlock x:Uid="SignOff_4" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="ANESTHESIA" />
                   </StackPanel>
                   <StackPanel>
-                    <TextBlock Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.Readings}" AutomationProperties.Name="Readings recorded" />
-                    <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="READINGS" />
+                    <TextBlock x:Uid="SignOff_5" Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.Readings}" AutomationProperties.Name="Readings recorded" />
+                    <TextBlock x:Uid="SignOff_6" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="READINGS" />
                   </StackPanel>
                 </StackPanel>
                 <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceBrush}" TextWrapping="WrapWholeWords" Text="{Binding Data.Counts}" />
@@ -59,28 +59,28 @@
           <mvux:FeedView.ErrorTemplate>
             <DataTemplate>
               <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Couldn't read this record." />
+                <TextBlock x:Uid="SignOff_7" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Couldn't read this record." />
                 <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords" Text="{Binding Message}" />
-                <Button Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Left" Content="Retry"
+                <Button x:Uid="SignOff_8" Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Left" Content="Retry"
                         Command="{Binding DataContext.Retry, ElementName=SummaryFeed}" />
               </StackPanel>
             </DataTemplate>
           </mvux:FeedView.ErrorTemplate>
         </mvux:FeedView>
 
-        <TextBox Header="Veterinarian"
+        <TextBox x:Uid="SignOff_9" Header="Veterinarian"
                  Text="{Binding Veterinarian, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  AutomationProperties.Name="Signing veterinarian" />
-        <CheckBox Content="I have reviewed this anesthesia record and it is complete."
+        <CheckBox x:Uid="SignOff_10" Content="I have reviewed this anesthesia record and it is complete."
                   IsChecked="{Binding Confirmed, Mode=TwoWay}" />
-        <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
+        <TextBlock x:Uid="SignOff_11" Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
                    Text="Signing makes the record read-only on this device. This is a typed name on a shared tablet, not an electronic signature." />
       </StackPanel>
     </ScrollViewer>
 
     <StackPanel Grid.Row="2" Padding="24,12,24,24" Spacing="8">
       <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource ErrorBrush}" TextWrapping="WrapWholeWords" Text="{Binding Error}" />
-      <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Stretch" Content="Sign record"
+      <Button x:Uid="SignOff_12" Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Stretch" Content="Sign record"
               Command="{Binding Sign}" AutomationProperties.Name="Sign the record" />
     </StackPanel>
   </Grid>

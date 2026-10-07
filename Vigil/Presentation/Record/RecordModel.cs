@@ -41,9 +41,9 @@ public partial record CaseView(
     /// <summary>"next 2:41" while waiting, "overdue 0:40" once late: the sign is in the words, not hidden by an absolute value.</summary>
     public string ClockText => DueStateName switch
     {
-        nameof(DueState.Overdue) => $"overdue {NextText}",
+        nameof(DueState.Overdue) => Loc.F("Clock_Overdue", "overdue {0}", NextText),
         nameof(DueState.None) => "",
-        _ => $"next {NextText}",
+        _ => Loc.F("Clock_Next", "next {0}", NextText),
     };
 
     public bool IsNotAnesthetized => !IsAnesthetized;
@@ -97,10 +97,10 @@ public partial record CaseView(
             $"{p.WeightKg:0.0}",
             string.Join(" · ", new[] { p.SpeciesAndBreed, p.AgeYears > 0 ? $"{p.AgeYears:0.#} y" : "", string.IsNullOrWhiteSpace(p.Owner) ? "" : $"owner {p.Owner}" }.Where(x => x.Length > 0)),
             c.Preop,
-            $"{c.Preop.DoneCount} of 5 checks",
-            c.InducedAt is DateTimeOffset i ? $"Induced at {i:HH:mm}" : "Not induced",
+            Loc.F("Preop_Progress", "{0} of 5 checks", c.Preop.DoneCount),
+            c.InducedAt is DateTimeOffset i ? Loc.F("Preop_InducedAt", "Induced at {0:HH:mm}", i) : Loc.T("Preop_NotInduced", "Not induced"),
             Schedule.HoursMinutes(Schedule.Elapsed(c, now)),
-            due switch { DueState.Overdue => "Reading overdue", DueState.None => "No reading due", _ => "Next reading" },
+            due switch { DueState.Overdue => Loc.T("Due_Overdue", "Reading overdue"), DueState.None => Loc.T("Due_None", "No reading due"), _ => Loc.T("Due_Next", "Next reading") },
             due == DueState.None ? "—" : Schedule.Clock(remaining.Duration()),
             due.ToString(),
             Schedule.Progress(c, interval, now) * 100,
@@ -109,33 +109,33 @@ public partial record CaseView(
             c.Readings.Count,
             strip,
             strip.Summary(p.Species),
-            c.Readings.Count > 0 ? $"Last recorded {c.Readings[^1].At:HH:mm}" : "No readings yet",
+            c.Readings.Count > 0 ? Loc.F("Monitor_LastRecorded", "Last recorded {0:HH:mm}", c.Readings[^1].At) : Loc.T("Readings_None", "No readings yet"),
             // A signed record stops its recovery clock at the signature.
             c.Recovery.ExtubatedAt is DateTimeOffset x ? Schedule.HoursMinutes((c.SignedAt ?? now) - x) : c.EndedAt is DateTimeOffset e ? Schedule.HoursMinutes((c.SignedAt ?? now) - e) : "—",
-            c.Recovery.ExtubatedAt is not null ? "since extubation" : c.EndedAt is not null ? "since anesthesia ended (not extubated)" : "anesthesia not ended",
-            c.Recovery.ExtubatedAt is DateTimeOffset ex ? $"Extubated {ex:HH:mm}" : "",
-            c.Recovery.SternalAt is DateTimeOffset st ? $"Sternal {st:HH:mm}" : "",
-            c.SignedBy is { } by ? $"Signed by {by} at {c.SignedAt:HH:mm}. The record is read-only." : "");
+            c.Recovery.ExtubatedAt is not null ? Loc.T("Recovery_SinceExtubation", "since extubation") : c.EndedAt is not null ? Loc.T("Recovery_SinceEnded", "since anesthesia ended (not extubated)") : Loc.T("Recovery_NotEnded", "anesthesia not ended"),
+            c.Recovery.ExtubatedAt is DateTimeOffset ex ? Loc.F("Recovery_Extubated", "Extubated {0:HH:mm}", ex) : "",
+            c.Recovery.SternalAt is DateTimeOffset st ? Loc.F("Recovery_Sternal", "Sternal {0:HH:mm}", st) : "",
+            c.SignedBy is { } by ? Loc.F("Recovery_SignedBy", "Signed by {0} at {1:HH:mm}. The record is read-only.", by, c.SignedAt) : "");
     }
 
     private static ReadingRow Row(Species species, VitalsReading r)
     {
         static string N(int? v) => v?.ToString() ?? "—";
         var alarms = Vitals.Alarms(species, r)
-            .Select(a => $"{Vitals.Label(a.Kind)} {(a.Class == RangeClass.High ? "▲ high" : "▼ low")}");
+            .Select(a => $"{Vitals.Label(a.Kind)} {(a.Class == RangeClass.High ? Loc.T("Alarm_High", "▲ high") : Loc.T("Alarm_Low", "▼ low"))}");
         return new ReadingRow(
             $"{r.At:HH:mm}", N(r.Hr), N(r.Rr), N(r.SpO2), N(r.EtCo2),
             r.Sys is null && r.Dia is null ? "—" : $"{N(r.Sys)}/{N(r.Dia)}",
-            r.EffectiveMap is int m ? (r.MapIsCalculated ? $"{m} calc" : $"{m}") : "—",
+            r.EffectiveMap is int m ? (r.MapIsCalculated ? Loc.F("Map_Calc", "{0} calc", m) : $"{m}") : "—",
             r.TempC is decimal t ? $"{t:0.0}" : "—",
-            r.Plane.ToString(),
+            Loc.Plane(r.Plane),
             string.Join(" · ", alarms),
             r.Note);
     }
 
     private static DoseRow DoseRowOf(DoseGiven d) => new(
         $"{d.At:HH:mm}", d.DrugName, $"{d.MgPerKg:0.###} mg/kg", $"{d.VolumeMl:0.00} mL", d.Route.ToString(),
-        d.OutOfRangeConfirmed ? "Out of range, confirmed" : "");
+        d.OutOfRangeConfirmed ? Loc.T("Dose_OutOfRangeConfirmed", "Out of range, confirmed") : "");
 }
 
 public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, IPreferences Preferences, IRecordExporter Exporter, INavigator Navigator)
@@ -177,6 +177,9 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
 
     public IFeed<bool> ShowStrip => ShowTable.Select(t => !t);
 
+    /// <summary>In-app setting OR'ed with the platform's; the strip draws new columns final instead of fading them.</summary>
+    public IFeed<bool> ReduceMotion => Feed.Async(_ => ValueTask.FromResult(Preferences.ReduceMotion), Preferences.Changed);
+
     public async ValueTask Step(string arg, CancellationToken ct) =>
         await Draft.UpdateAsync(d => (d ?? VitalsDraft.Empty).Step(arg), ct);
 
@@ -196,7 +199,7 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
         {
             if (c.Status != CaseStatus.Anesthetized)
             {
-                throw new InvalidOperationException("Induce before recording vitals.");
+                throw new InvalidOperationException(Loc.T("Error_InduceFirst", "Induce before recording vitals."));
             }
             saved = true;
             return c with { Readings = c.Readings.Add(reading) };
@@ -253,11 +256,11 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
         string outcome;
         try
         {
-            outcome = await Store.GetAsync(Ref.Id, ct) is { } c ? await action(c, ct) : "This record no longer exists.";
+            outcome = await Store.GetAsync(Ref.Id, ct) is { } c ? await action(c, ct) : Loc.T("Record_Gone", "This record no longer exists.");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            outcome = $"Export failed: {ex.GetType().Name}: {ex.Message}";
+            outcome = Loc.F("Export_Failed", "Export failed: {0}", ex.Message);
         }
         await Notice.UpdateAsync(_ => outcome, ct);
     }
@@ -280,7 +283,7 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException or KeyNotFoundException)
         {
-            await SaveError.UpdateAsync(_ => $"Not saved: {ex.Message}", ct);
+            await SaveError.UpdateAsync(_ => Loc.F("Error_NotSaved", "Not saved: {0}", ex.Message), ct);
         }
     }
 }

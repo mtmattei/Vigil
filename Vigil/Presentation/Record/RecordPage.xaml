@@ -19,7 +19,7 @@
     <utu:NavigationBar Content="{Binding Title}"
                        Background="{ThemeResource BackgroundBrush}">
       <utu:NavigationBar.MainCommand>
-        <AppBarButton Label="Board"
+        <AppBarButton x:Uid="Record_1" Label="Board"
                       AutomationProperties.Name="Back to the board">
           <AppBarButton.Icon>
             <SymbolIcon Symbol="Back" />
@@ -28,7 +28,7 @@
       </utu:NavigationBar.MainCommand>
     </utu:NavigationBar>
 
-    <muxc:InfoBar Grid.Row="1"
+    <muxc:InfoBar x:Uid="Record_2" Grid.Row="1"
                   Severity="Error"
                   Title="Not saved"
                   Message="{Binding SaveError}"
@@ -36,7 +36,7 @@
                   IsClosable="False"
                   Margin="16,0">
       <muxc:InfoBar.ActionButton>
-        <Button Content="Dismiss" Command="{Binding DismissError}" />
+        <Button x:Uid="Record_3" Content="Dismiss" Command="{Binding DismissError}" />
       </muxc:InfoBar.ActionButton>
     </muxc:InfoBar>
 
@@ -61,22 +61,22 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <utu:TabBar Style="{StaticResource TopTabBarStyle}"
+              <utu:TabBar x:Uid="Record_4" Style="{StaticResource TopTabBarStyle}"
                           uen:Region.Attached="True"
                           SelectedIndex="{Binding Parent.Tab, Mode=TwoWay}"
                           Background="Transparent"
                           AutomationProperties.Name="Record sections">
-                <utu:TabBarItem Content="Pre-op" uen:Region.Name="Preop" />
-                <utu:TabBarItem Content="Drugs" uen:Region.Name="Drugs" />
-                <utu:TabBarItem Content="Monitor" uen:Region.Name="Monitor" />
-                <utu:TabBarItem Content="Recovery" uen:Region.Name="Recovery" />
+                <utu:TabBarItem x:Uid="Record_5" Content="Pre-op" uen:Region.Name="Preop" />
+                <utu:TabBarItem x:Uid="Record_6" Content="Drugs" uen:Region.Name="Drugs" />
+                <utu:TabBarItem x:Uid="Record_7" Content="Monitor" uen:Region.Name="Monitor" />
+                <utu:TabBarItem x:Uid="Record_8" Content="Recovery" uen:Region.Name="Recovery" />
               </utu:TabBar>
               <StackPanel Grid.Column="1"
                           Orientation="Horizontal"
                           Spacing="12"
                           VerticalAlignment="Center"
                           Visibility="{Binding Data.IsAnesthetized}">
-                <TextBlock Style="{StaticResource CodeTextStyle}"
+                <TextBlock x:Uid="Record_9" Style="{StaticResource CodeTextStyle}"
                            Foreground="{ThemeResource OnSurfaceBrush}"
                            Text="{Binding Data.Elapsed}"
                            AutomationProperties.Name="Elapsed anesthesia time" />
@@ -94,13 +94,13 @@
               <ScrollViewer uen:Region.Name="Preop" Visibility="Collapsed">
                 <StackPanel Padding="{utu:Responsive Narrow='16,16,16,32', Wide='32,24,32,40'}" Spacing="24" MaxWidth="960" HorizontalAlignment="Stretch">
                   <StackPanel Spacing="4">
-                    <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="WEIGHT" />
+                    <TextBlock x:Uid="Record_10" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="WEIGHT" />
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                      <TextBlock Style="{StaticResource DisplayLarge}"
+                      <TextBlock x:Uid="Record_11" Style="{StaticResource DisplayLarge}"
                                  Foreground="{ThemeResource OnBackgroundBrush}"
                                  Text="{Binding Data.WeightText}"
                                  AutomationProperties.Name="Patient weight in kilograms" />
-                      <TextBlock Style="{StaticResource HeadlineMedium}"
+                      <TextBlock x:Uid="Record_12" Style="{StaticResource HeadlineMedium}"
                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                  VerticalAlignment="Bottom"
                                  Margin="0,0,0,10"
@@ -112,26 +112,26 @@
                   <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                     <StackPanel Padding="20" Spacing="8">
                       <Grid>
-                        <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Pre-anesthetic check" />
+                        <TextBlock x:Uid="Record_13" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Pre-anesthetic check" />
                         <TextBlock Style="{StaticResource CodeTextStyle}"
                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="{Binding Data.PreopProgress}" />
                       </Grid>
-                      <CheckBox Content="Fasted (food withheld per protocol)"
+                      <CheckBox x:Uid="Record_14" Content="Fasted (food withheld per protocol)"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.Fasted, Mode=TwoWay}" />
-                      <CheckBox Content="IV catheter placed and flushed"
+                      <CheckBox x:Uid="Record_15" Content="IV catheter placed and flushed"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.IvCatheter, Mode=TwoWay}" />
-                      <CheckBox Content="Anesthesia machine and circuit leak-checked"
+                      <CheckBox x:Uid="Record_16" Content="Anesthesia machine and circuit leak-checked"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.MachineChecked, Mode=TwoWay}" />
-                      <CheckBox Content="Owner consent signed"
+                      <CheckBox x:Uid="Record_17" Content="Owner consent signed"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.ConsentSigned, Mode=TwoWay}" />
-                      <CheckBox Content="Pre-anesthetic bloodwork reviewed"
+                      <CheckBox x:Uid="Record_18" Content="Pre-anesthetic bloodwork reviewed"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.BloodworkReviewed, Mode=TwoWay}" />
                     </StackPanel>
@@ -139,22 +139,22 @@
 
                   <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
                     <StackPanel Padding="20" Spacing="12">
-                      <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="ASA physical status" />
-                      <muxc:RadioButtons MaxColumns="6"
+                      <TextBlock x:Uid="Record_19" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="ASA physical status" />
+                      <muxc:RadioButtons x:Uid="Record_20" MaxColumns="6"
                                          IsEnabled="{Binding Data.IsScheduled}"
                                          SelectedIndex="{Binding Parent.Preop.Asa, Mode=TwoWay}"
                                          AutomationProperties.Name="ASA physical status">
-                        <x:String>Not set</x:String>
-                        <x:String>I</x:String>
-                        <x:String>II</x:String>
-                        <x:String>III</x:String>
-                        <x:String>IV</x:String>
-                        <x:String>V</x:String>
+                        <RadioButton x:Uid="Record_21" Content="Not set" />
+                        <RadioButton x:Uid="Record_22" Content="I" />
+                        <RadioButton x:Uid="Record_23" Content="II" />
+                        <RadioButton x:Uid="Record_24" Content="III" />
+                        <RadioButton x:Uid="Record_25" Content="IV" />
+                        <RadioButton x:Uid="Record_26" Content="V" />
                       </muxc:RadioButtons>
-                      <CheckBox Content="E: emergency procedure"
+                      <CheckBox x:Uid="Record_27" Content="E: emergency procedure"
                                 IsEnabled="{Binding Data.IsScheduled}"
                                 IsChecked="{Binding Parent.Preop.AsaEmergency, Mode=TwoWay}" />
-                      <TextBox Header="Notes"
+                      <TextBox x:Uid="Record_28" Header="Notes"
                                AcceptsReturn="True"
                                TextWrapping="Wrap"
                                MinHeight="80"
@@ -164,7 +164,7 @@
                   </utu:CardContentControl>
 
                   <StackPanel Spacing="8">
-                    <Button Style="{StaticResource OutlinedButtonStyle}"
+                    <Button x:Uid="Record_29" Style="{StaticResource OutlinedButtonStyle}"
                             HorizontalAlignment="Left"
                             MinWidth="220"
                             Content="Give premedication"
@@ -172,7 +172,7 @@
                             uen:Navigation.Request="!Dose"
                             uen:Navigation.Data="{Binding Data}"
                             AutomationProperties.Name="Give premedication" />
-                    <Button Style="{StaticResource FilledButtonStyle}"
+                    <Button x:Uid="Record_30" Style="{StaticResource FilledButtonStyle}"
                             HorizontalAlignment="Left"
                             MinWidth="220"
                             Content="Induce"
@@ -180,7 +180,7 @@
                             IsEnabled="{Binding Data.CanInduce}"
                             Command="{Binding Parent.Induce}"
                             AutomationProperties.Name="Induce anesthesia" />
-                    <TextBlock Style="{StaticResource BodySmall}"
+                    <TextBlock x:Uid="Record_31" Style="{StaticResource BodySmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                Visibility="{Binding Data.IsScheduled}"
                                Text="Complete the five checks and set the ASA status to induce. Induction starts the reading clock." />
@@ -195,8 +195,8 @@
               <ScrollViewer uen:Region.Name="Drugs" Visibility="Collapsed">
                 <StackPanel Padding="{utu:Responsive Narrow='16,16,16,32', Wide='32,24,32,40'}" Spacing="16" MaxWidth="960" HorizontalAlignment="Stretch">
                   <Grid>
-                    <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" VerticalAlignment="Center" Text="Doses given" />
-                    <Button HorizontalAlignment="Right"
+                    <TextBlock x:Uid="Record_32" Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" VerticalAlignment="Center" Text="Doses given" />
+                    <Button x:Uid="Record_33" HorizontalAlignment="Right"
                             Style="{StaticResource FilledButtonStyle}"
                             IsEnabled="{Binding Data.CanChange}"
                             uen:Navigation.Request="!Dose"
@@ -204,15 +204,15 @@
                             AutomationProperties.Name="Give a dose">
                       <StackPanel Orientation="Horizontal" Spacing="8">
                         <SymbolIcon Symbol="Add" />
-                        <TextBlock Text="Give a dose" />
+                        <TextBlock x:Uid="Record_34" Text="Give a dose" />
                       </StackPanel>
                     </Button>
                   </Grid>
-                  <TextBlock Style="{StaticResource BodyMedium}"
+                  <TextBlock x:Uid="Record_35" Style="{StaticResource BodyMedium}"
                              Foreground="{ThemeResource OnSurfaceVariantBrush}"
                              Visibility="{Binding Data.HasNoDoses}"
                              Text="No doses yet. Premedication, induction agents and antibiotics given for this case are listed here with their volume." />
-                  <ItemsControl ItemsSource="{Binding Data.Doses}" AutomationProperties.Name="Doses given">
+                  <ItemsControl x:Uid="Record_36" ItemsSource="{Binding Data.Doses}" AutomationProperties.Name="Doses given">
                     <ItemsControl.ItemTemplate>
                       <DataTemplate x:DataType="local:DoseRow">
                         <Grid Padding="0,10" ColumnSpacing="16" BorderBrush="{ThemeResource OutlineBrush}" BorderThickness="0,0,0,1">
@@ -263,11 +263,11 @@
                       </Grid.RowDefinitions>
                       <Grid>
                         <StackPanel Spacing="2">
-                          <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Five-minute strip" />
+                          <TextBlock x:Uid="Record_37" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Five-minute strip" />
                           <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.LastRecorded}" />
                         </StackPanel>
                         <!-- A filter chip: Material's default ToggleButton is an icon toggle that blanks its text when checked. -->
-                        <utu:Chip HorizontalAlignment="Right"
+                        <utu:Chip x:Uid="Record_38" HorizontalAlignment="Right"
                                   VerticalAlignment="Center"
                                   Style="{StaticResource FilterChipStyle}"
                                   CanRemove="False"
@@ -278,13 +278,14 @@
                       <controls:VitalsStrip Grid.Row="1"
                                             Height="{utu:Responsive Narrowest=300, Widest=440}"
                                             Data="{Binding Data.Strip}"
+                                            ReduceMotion="{Binding Parent.ReduceMotion}"
                                             Visibility="{Binding Parent.ShowStrip}"
                                             AutomationProperties.Name="{Binding Data.StripSummary}" />
                       <!-- Same footprint as the strip, so the pad below never moves when the table is on. -->
                       <ScrollViewer Grid.Row="1"
                                     Height="{utu:Responsive Narrowest=300, Widest=440}"
                                     Visibility="{Binding Parent.ShowTable}">
-                      <ItemsControl ItemsSource="{Binding Data.Readings}"
+                      <ItemsControl x:Uid="Record_39" ItemsSource="{Binding Data.Readings}"
                                     AutomationProperties.Name="Readings table">
                         <ItemsControl.ItemTemplate>
                           <DataTemplate x:DataType="local:ReadingRow">
@@ -296,13 +297,13 @@
                               <TextBlock Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{x:Bind Time}" />
                               <StackPanel Grid.Column="1" Spacing="2">
                                 <TextBlock Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceBrush}" TextWrapping="Wrap">
-                                  <Run Text="HR" /> <Run Text="{x:Bind Hr}" />
-                                  <Run Text=" RR" /> <Run Text="{x:Bind Rr}" />
-                                  <Run Text=" SpO₂" /> <Run Text="{x:Bind SpO2}" />
-                                  <Run Text=" BP" /> <Run Text="{x:Bind Bp}" />
-                                  <Run Text=" MAP" /> <Run Text="{x:Bind Map}" />
-                                  <Run Text=" EtCO₂" /> <Run Text="{x:Bind EtCo2}" />
-                                  <Run Text=" T" /> <Run Text="{x:Bind Temp}" />
+                                  <Run x:Uid="Record_40" Text="HR" /> <Run Text="{x:Bind Hr}" />
+                                  <Run x:Uid="Record_41" Text=" RR" /> <Run Text="{x:Bind Rr}" />
+                                  <Run x:Uid="Record_42" Text=" SpO₂" /> <Run Text="{x:Bind SpO2}" />
+                                  <Run x:Uid="Record_43" Text=" BP" /> <Run Text="{x:Bind Bp}" />
+                                  <Run x:Uid="Record_44" Text=" MAP" /> <Run Text="{x:Bind Map}" />
+                                  <Run x:Uid="Record_45" Text=" EtCO₂" /> <Run Text="{x:Bind EtCo2}" />
+                                  <Run x:Uid="Record_46" Text=" T" /> <Run Text="{x:Bind Temp}" />
                                   <Run Text=" " /> <Run Text="{x:Bind Plane}" />
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource ErrorBrush}" Text="{x:Bind Alarms}" />
@@ -321,7 +322,7 @@
                               Grid.Column="{utu:Responsive Narrowest=0, Widest=1}"
                               Grid.ColumnSpan="{utu:Responsive Narrowest=2, Widest=1}"
                               Spacing="16">
-                    <Button Style="{StaticResource FilledButtonStyle}"
+                    <Button x:Uid="Record_47" Style="{StaticResource FilledButtonStyle}"
                             HorizontalAlignment="Stretch"
                             Height="64"
                             IsEnabled="{Binding Data.IsAnesthetized}"
@@ -332,7 +333,7 @@
                       </Button.KeyboardAccelerators>
                       <StackPanel Orientation="Horizontal" Spacing="12">
                         <SymbolIcon Symbol="Accept" />
-                        <TextBlock Text="Record reading" />
+                        <TextBlock x:Uid="Record_48" Text="Record reading" />
                         <TextBlock Style="{StaticResource CodeTextStyle}" Text="{Binding Data.ClockText}" />
                       </StackPanel>
                     </Button>
@@ -348,59 +349,59 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                       </Grid.RowDefinitions>
-                        <controls:VitalStepper Grid.Row="0" Grid.Column="0" Field="Hr" Label="HR" Unit="bpm" Glyph="●" GlyphBrush="{ThemeResource VitalHrBrush}"
+                        <controls:VitalStepper x:Uid="Record_49" Grid.Row="0" Grid.Column="0" Field="Hr" Label="HR" Unit="bpm" Glyph="●" GlyphBrush="{ThemeResource VitalHrBrush}"
                                                SpokenName="heart rate, beats per minute"
                                                Text="{Binding Parent.Draft.Hr, Mode=TwoWay}" Flag="{Binding Parent.Flags.Hr}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="0" Grid.Column="1" Field="Rr" Label="RR" Unit="/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                        <controls:VitalStepper x:Uid="Record_50" Grid.Row="0" Grid.Column="1" Field="Rr" Label="RR" Unit="/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
                                                SpokenName="respiratory rate, breaths per minute"
                                                Text="{Binding Parent.Draft.Rr, Mode=TwoWay}" Flag="{Binding Parent.Flags.Rr}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="1" Grid.Column="0" Field="SpO2" Label="SpO₂" Unit="%" Glyph="○" GlyphBrush="{ThemeResource VitalSpO2Brush}"
+                        <controls:VitalStepper x:Uid="Record_51" Grid.Row="1" Grid.Column="0" Field="SpO2" Label="SpO₂" Unit="%" Glyph="○" GlyphBrush="{ThemeResource VitalSpO2Brush}"
                                                SpokenName="oxygen saturation, percent"
                                                Text="{Binding Parent.Draft.SpO2, Mode=TwoWay}" Flag="{Binding Parent.Flags.SpO2}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="1" Grid.Column="1" Field="EtCo2" Label="EtCO₂" Unit="mmHg" Glyph="×" GlyphBrush="{ThemeResource VitalEtCo2Brush}"
+                        <controls:VitalStepper x:Uid="Record_52" Grid.Row="1" Grid.Column="1" Field="EtCo2" Label="EtCO₂" Unit="mmHg" Glyph="×" GlyphBrush="{ThemeResource VitalEtCo2Brush}"
                                                SpokenName="end-tidal CO2, millimetres of mercury"
                                                Text="{Binding Parent.Draft.EtCo2, Mode=TwoWay}" Flag="{Binding Parent.Flags.EtCo2}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="2" Grid.Column="0" Field="Sys" Label="SYS" Unit="mmHg" Glyph="∨" GlyphBrush="{ThemeResource VitalBpBrush}"
+                        <controls:VitalStepper x:Uid="Record_53" Grid.Row="2" Grid.Column="0" Field="Sys" Label="SYS" Unit="mmHg" Glyph="∨" GlyphBrush="{ThemeResource VitalBpBrush}"
                                                SpokenName="systolic pressure"
                                                Text="{Binding Parent.Draft.Sys, Mode=TwoWay}" Flag="{Binding Parent.Flags.Sys}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="2" Grid.Column="1" Field="Dia" Label="DIA" Unit="mmHg" Glyph="∧" GlyphBrush="{ThemeResource VitalBpBrush}"
+                        <controls:VitalStepper x:Uid="Record_54" Grid.Row="2" Grid.Column="1" Field="Dia" Label="DIA" Unit="mmHg" Glyph="∧" GlyphBrush="{ThemeResource VitalBpBrush}"
                                                SpokenName="diastolic pressure"
                                                Text="{Binding Parent.Draft.Dia, Mode=TwoWay}" Flag="{Binding Parent.Flags.Dia}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="3" Grid.Column="0" Field="Map" Label="MAP" Unit="mmHg" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                        <controls:VitalStepper x:Uid="Record_55" Grid.Row="3" Grid.Column="0" Field="Map" Label="MAP" Unit="mmHg" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
                                                SpokenName="mean arterial pressure"
                                                Text="{Binding Parent.Draft.Map, Mode=TwoWay}" Flag="{Binding Parent.Flags.Map}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="3" Grid.Column="1" Field="TempC" Label="Temp" Unit="°C" Glyph="■" GlyphBrush="{ThemeResource VitalTempBrush}"
+                        <controls:VitalStepper x:Uid="Record_56" Grid.Row="3" Grid.Column="1" Field="TempC" Label="Temp" Unit="°C" Glyph="■" GlyphBrush="{ThemeResource VitalTempBrush}"
                                                SpokenName="temperature, degrees Celsius"
                                                Text="{Binding Parent.Draft.TempC, Mode=TwoWay}" Flag="{Binding Parent.Flags.TempC}"
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="4" Grid.Column="0" Field="Vaporizer" Label="Sevo" Unit="%" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                        <controls:VitalStepper x:Uid="Record_57" Grid.Row="4" Grid.Column="0" Field="Vaporizer" Label="Sevo" Unit="%" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
                                                SpokenName="vaporizer setting, percent"
                                                Text="{Binding Parent.Draft.Vaporizer, Mode=TwoWay}" 
                                                Command="{Binding Parent.Step}" />
-                        <controls:VitalStepper Grid.Row="4" Grid.Column="1" Field="O2" Label="O₂" Unit="L/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                        <controls:VitalStepper x:Uid="Record_58" Grid.Row="4" Grid.Column="1" Field="O2" Label="O₂" Unit="L/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
                                                SpokenName="oxygen flow, litres per minute"
                                                Text="{Binding Parent.Draft.O2, Mode=TwoWay}" 
                                                Command="{Binding Parent.Step}" />
                     </Grid>
                     <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords">
-                      <Run Text="MAP left blank is derived as (SYS + 2·DIA) / 3:" />
+                      <Run x:Uid="Record_59" Text="MAP left blank is derived as (SYS + 2·DIA) / 3:" />
                       <Run Text="{Binding Parent.Flags.MapHint}" />
                     </TextBlock>
-                    <muxc:RadioButtons Header="Anesthetic plane"
+                    <muxc:RadioButtons x:Uid="Record_60" Header="Anesthetic plane"
                                        MaxColumns="3"
                                        SelectedIndex="{Binding Parent.Draft.PlaneIndex, Mode=TwoWay}">
-                      <x:String>Light</x:String>
-                      <x:String>Surgical</x:String>
-                      <x:String>Deep</x:String>
+                      <RadioButton x:Uid="Record_61" Content="Light" />
+                      <RadioButton x:Uid="Record_62" Content="Surgical" />
+                      <RadioButton x:Uid="Record_63" Content="Deep" />
                     </muxc:RadioButtons>
-                    <TextBox Header="Note (optional)"
+                    <TextBox x:Uid="Record_64" Header="Note (optional)"
                              Text="{Binding Parent.Draft.Note, Mode=TwoWay}"
                              AutomationProperties.Name="Note for this reading" />
                   </StackPanel>
@@ -413,16 +414,16 @@
 
                   <!-- Under anesthesia: the only action here is ending it. -->
                   <StackPanel Spacing="8" Visibility="{Binding Data.IsAnesthetized}">
-                    <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" Text="Patient is under anesthesia" />
-                    <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
+                    <TextBlock x:Uid="Record_65" Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" Text="Patient is under anesthesia" />
+                    <TextBlock x:Uid="Record_66" Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
                                Text="End anesthesia when the vaporizer is off. The reading clock stops and recovery starts." />
-                    <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="End anesthesia"
+                    <Button x:Uid="Record_67" Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="End anesthesia"
                             Command="{Binding Parent.EndAnesthesia}" AutomationProperties.Name="End anesthesia" />
                   </StackPanel>
 
                   <StackPanel Spacing="4" Visibility="{Binding Data.IsNotAnesthetized}">
-                    <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="RECOVERY" />
-                    <TextBlock Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="{Binding Data.RecoveryAnchor}"
+                    <TextBlock x:Uid="Record_68" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="RECOVERY" />
+                    <TextBlock x:Uid="Record_69" Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="{Binding Data.RecoveryAnchor}"
                                AutomationProperties.Name="Time in recovery" />
                     <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.RecoveryAnchorLabel}" />
                   </StackPanel>
@@ -430,52 +431,52 @@
                   <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False"
                                           Visibility="{Binding Data.IsNotAnesthetized}">
                     <StackPanel Padding="20" Spacing="12">
-                      <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Recovery log" />
+                      <TextBlock x:Uid="Record_70" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Recovery log" />
                       <Grid ColumnSpacing="12" RowSpacing="12">
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="*" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Spacing="6">
-                          <Button Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Extubated now"
+                          <Button x:Uid="Record_71" Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Extubated now"
                                   Visibility="{Binding Data.IsNotExtubated}" Command="{Binding Parent.Extubate}" AutomationProperties.Name="Record extubation now" />
                           <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.ExtubatedText}" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="6">
-                          <Button Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Sternal now"
+                          <Button x:Uid="Record_72" Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Sternal now"
                                   Visibility="{Binding Data.IsNotSternal}" Command="{Binding Parent.Sternal}" AutomationProperties.Name="Record sternal recumbency now" />
                           <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.SternalText}" />
                         </StackPanel>
                       </Grid>
-                      <muxc:RadioButtons Header="Pain score (0 none to 4 severe)"
+                      <muxc:RadioButtons x:Uid="Record_73" Header="Pain score (0 none to 4 severe)"
                                          MaxColumns="6"
                                          IsEnabled="{Binding Data.CanEditRecovery}"
                                          SelectedIndex="{Binding Parent.Recovery.PainIndex, Mode=TwoWay}">
-                        <x:String>Not scored</x:String>
-                        <x:String>0</x:String>
-                        <x:String>1</x:String>
-                        <x:String>2</x:String>
-                        <x:String>3</x:String>
-                        <x:String>4</x:String>
+                        <RadioButton x:Uid="Record_74" Content="Not scored" />
+                        <RadioButton Content="0" />
+                        <RadioButton Content="1" />
+                        <RadioButton Content="2" />
+                        <RadioButton Content="3" />
+                        <RadioButton Content="4" />
                       </muxc:RadioButtons>
-                      <TextBox Header="Temperature (°C)" InputScope="Number" MaxWidth="240" HorizontalAlignment="Left"
+                      <TextBox x:Uid="Record_75" Header="Temperature (°C)" InputScope="Number" MaxWidth="240" HorizontalAlignment="Left"
                                IsEnabled="{Binding Data.CanEditRecovery}"
                                Text="{Binding Parent.Recovery.TempC, Mode=TwoWay}" />
-                      <TextBox Header="Notes" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"
+                      <TextBox x:Uid="Record_76" Header="Notes" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"
                                IsEnabled="{Binding Data.CanEditRecovery}"
                                Text="{Binding Parent.Recovery.Notes, Mode=TwoWay}" />
                     </StackPanel>
                   </utu:CardContentControl>
 
                   <StackPanel Spacing="8">
-                    <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="Sign off"
+                    <Button x:Uid="Record_77" Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="Sign off"
                             Visibility="{Binding Data.IsRecovery}"
                             uen:Navigation.Request="!SignOff" uen:Navigation.Data="{Binding Data}"
                             AutomationProperties.Name="Sign off the record" />
                     <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnBackgroundBrush}" TextWrapping="WrapWholeWords" Text="{Binding Data.SignedText}" />
                     <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{Binding Data.IsSigned}">
-                      <Button Style="{StaticResource FilledButtonStyle}" Content="Export CSV" Command="{Binding Parent.Export}" AutomationProperties.Name="Export the record as CSV" />
-                      <Button Style="{StaticResource OutlinedButtonStyle}" Content="Copy summary" Command="{Binding Parent.CopySummary}" AutomationProperties.Name="Copy a text summary" />
+                      <Button x:Uid="Record_78" Style="{StaticResource FilledButtonStyle}" Content="Export CSV" Command="{Binding Parent.Export}" AutomationProperties.Name="Export the record as CSV" />
+                      <Button x:Uid="Record_79" Style="{StaticResource OutlinedButtonStyle}" Content="Copy summary" Command="{Binding Parent.CopySummary}" AutomationProperties.Name="Copy a text summary" />
                     </StackPanel>
                     <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Parent.Notice}" AutomationProperties.LiveSetting="Polite" />
                   </StackPanel>
@@ -499,8 +500,8 @@
       <mvux:FeedView.NoneTemplate>
         <DataTemplate>
           <StackPanel Padding="32,24" Spacing="12" HorizontalAlignment="Left">
-            <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="This record no longer exists." />
-            <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="It may have been cleared from this device." />
+            <TextBlock x:Uid="Record_80" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="This record no longer exists." />
+            <TextBlock x:Uid="Record_81" Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="It may have been cleared from this device." />
           </StackPanel>
         </DataTemplate>
       </mvux:FeedView.NoneTemplate>
@@ -510,10 +511,10 @@
           <StackPanel Padding="32,24" Spacing="12" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal" Spacing="8">
               <FontIcon Glyph="&#xE783;" FontSize="20" Foreground="{ThemeResource ErrorBrush}" />
-              <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="Couldn't read this record." />
+              <TextBlock x:Uid="Record_82" Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="Couldn't read this record." />
             </StackPanel>
             <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords" Text="{Binding Message}" />
-            <Button Style="{StaticResource OutlinedButtonStyle}"
+            <Button x:Uid="Record_83" Style="{StaticResource OutlinedButtonStyle}"
                     HorizontalAlignment="Left"
                     Content="Retry"
                     AutomationProperties.Name="Retry reading the record"

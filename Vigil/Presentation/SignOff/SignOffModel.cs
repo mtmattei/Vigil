@@ -14,9 +14,11 @@ public partial record SignOffSummary(
     string Blocker)
 {
     public string Counts =>
-        $"{Plural(Doses, "dose")} · {OutOfRangeDoses} out of range, confirmed · {Plural(AlarmReadings, "reading")} with an alarm";
+        Loc.F("SignOff_Counts", "{0} · {1} out of range, confirmed · {2} with an alarm", Plural(Doses, "dose"), OutOfRangeDoses, Plural(AlarmReadings, "reading"));
 
-    private static string Plural(int n, string noun) => n == 1 ? $"1 {noun}" : $"{n} {noun}s";
+    private static string Plural(int n, string noun) => noun == "dose"
+        ? (n == 1 ? Loc.T("Count_OneDose", "1 dose") : Loc.F("Count_Doses", "{0} doses", n))
+        : (n == 1 ? Loc.T("Count_OneReading", "1 reading") : Loc.F("Count_Readings", "{0} readings", n));
 
     public static SignOffSummary From(Case c)
     {
@@ -24,8 +26,8 @@ public partial record SignOffSummary(
         var blocker = c.Status switch
         {
             CaseStatus.Recovery => "",
-            CaseStatus.Signed => $"Already signed by {c.SignedBy}.",
-            _ => "End anesthesia before signing.",
+            CaseStatus.Signed => Loc.F("SignOff_AlreadySigned", "Already signed by {0}.", c.SignedBy),
+            _ => Loc.T("SignOff_EndFirst", "End anesthesia before signing."),
         };
         var r = c.Recovery;
         return new SignOffSummary(
@@ -36,7 +38,7 @@ public partial record SignOffSummary(
             c.Doses.Count,
             alarms,
             c.Doses.Count(d => d.OutOfRangeConfirmed),
-            $"Extubated {r.ExtubatedAt?.ToString("HH:mm") ?? "—"} · sternal {r.SternalAt?.ToString("HH:mm") ?? "—"} · pain {r.PainScore?.ToString() ?? "—"}/4",
+            Loc.F("SignOff_Recovery", "Extubated {0} · sternal {1} · pain {2}/4", r.ExtubatedAt?.ToString("HH:mm") ?? "—", r.SternalAt?.ToString("HH:mm") ?? "—", r.PainScore?.ToString() ?? "—"),
             c.Veterinarian,
             c.Status == CaseStatus.Recovery,
             blocker);
@@ -61,18 +63,18 @@ public partial record SignOffModel(CaseRef Ref, ICaseStore Store, IClock Clock, 
     {
         if (!confirmed || string.IsNullOrWhiteSpace(veterinarian))
         {
-            await Error.UpdateAsync(_ => "Enter the veterinarian's name and confirm the record is complete.", ct);
+            await Error.UpdateAsync(_ => Loc.T("SignOff_Incomplete", "Enter the veterinarian's name and confirm the record is complete."), ct);
             return;
         }
         try
         {
             await Store.UpdateAsync(Ref.Id, c => c.Status == CaseStatus.Recovery
                 ? c with { Status = CaseStatus.Signed, SignedBy = veterinarian.Trim(), SignedAt = Clock.Now }
-                : throw new InvalidOperationException("End anesthesia before signing."), ct);
+                : throw new InvalidOperationException(Loc.T("SignOff_EndFirst", "End anesthesia before signing.")), ct);
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException or KeyNotFoundException)
         {
-            await Error.UpdateAsync(_ => $"Not signed: {ex.Message}", ct);
+            await Error.UpdateAsync(_ => Loc.F("SignOff_NotSigned", "Not signed: {0}", ex.Message), ct);
             return;
         }
         await Navigator.NavigateBackAsync(this, cancellation: ct);

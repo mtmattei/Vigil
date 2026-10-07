@@ -157,3 +157,28 @@ Surprises:
   time). Now "overdue 6:22".
 - `--vigil-seed=sample` clears the store by design; a case created during testing (Nova) went with it.
 Threads: 0.
+
+## 2026-10-07 11:26 — Release path gate met (step 2 closed)
+
+CI run 37638904753 (commit 393696e): unit tests, desktop win-x64 / linux-x64 / osx-arm64, WebAssembly, Android,
+iOS simulator build: all success. iOS job 14:43:49Z → 15:17:00Z (33 min) with Xcode 26.3 + workload 10.0.300.
+Local Release publishes: desktop win-x64 25 s, WASM 518 s, Android APK 246 s (54.9 MB). GitHub returned HTTP 500
+on every push for ~15 min (3 commits held locally), then accepted them.
+
+## 2026-10-07 11:36 — Step 7: Settings + EN/FR + Theatre theme
+
+Came back: Settings (theme System/Paper/Theatre via `IThemeService`, language via `ILocalizationService`
+with a restart note, reduce motion, reading interval 3/5/10, load sample day, clear all with Cancel as default),
+persisted `preferences.json`, full EN/FR: `tools/localize.py` gives every static XAML string an `x:Uid` and
+collects `Loc.T/F` keys from C#; `tools/fr.json` holds the French; the run fails on any missing translation.
+Numbers: 316 keys per language (229 XAML, 87 code). French verified at runtime after restart on Board, Record
+(Monitor: FC/FR/PAM, "en retard 8:55", French decimals "18,4 kg") and Settings incl. accessible names. Interval
+3 min → board overdue moved from 7:20 to 12:50 for the same last reading. Tests 50/50. Lint 0.
+Surprises:
+- Theatre theme: the Skia strip drew Paper colours. `ResourceDictionary.TryGetValue` on the app dictionary
+  answers with the application-level theme; the resolver now reads the element-theme dictionary first and
+  walks merged dictionaries last-to-first (later ones win).
+- Material `ToggleSwitch` drops its `Header`: an unlabeled switch. Label row added.
+- The language notice landed in the Records card (shared state); now its own line.
+- The system message dialog keeps Fluent chrome (blue accent) inside the Material app: polish finding.
+Threads: 0.

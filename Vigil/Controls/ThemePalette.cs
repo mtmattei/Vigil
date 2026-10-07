@@ -12,30 +12,43 @@ internal static class ThemePalette
     public static Color Resolve(string key, ElementTheme theme, Color fallback)
     {
         var themeKey = theme == ElementTheme.Dark ? "Dark" : "Light";
-        return Find(Application.Current.Resources, key, themeKey) ?? fallback;
+        // Theme dictionaries first, depth-first through merged dictionaries. A plain TryGetValue on the app
+        // dictionary answers with the application-level theme (Light), not this element's: measured, the strip
+        // drew Paper colours under Theatre. Merged dictionaries are walked last-first: later ones win in WinUI.
+        return FindThemed(Application.Current.Resources, key, themeKey)
+            ?? FindDirect(Application.Current.Resources, key)
+            ?? fallback;
     }
 
-    private static Color? Find(ResourceDictionary dictionary, string key, string themeKey)
+    private static Color? FindThemed(ResourceDictionary dictionary, string key, string themeKey)
     {
-        foreach (var name in new[] { themeKey, themeKey == "Light" ? "Default" : "Dark" })
+        foreach (var name in themeKey == "Light" ? new[] { "Light", "Default" } : new[] { "Dark" })
         {
             if (dictionary.ThemeDictionaries.TryGetValue(name, out var t) && t is ResourceDictionary td && Value(td, key) is Color c)
             {
                 return c;
             }
         }
-        if (Value(dictionary, key) is Color direct)
+        foreach (var merged in dictionary.MergedDictionaries.Reverse())
         {
-            return direct;
-        }
-        foreach (var merged in dictionary.MergedDictionaries)
-        {
-            if (Find(merged, key, themeKey) is Color found)
+            if (FindThemed(merged, key, themeKey) is Color found)
             {
                 return found;
             }
         }
         return null;
+    }
+
+    private static Color? FindDirect(ResourceDictionary dictionary, string key)
+    {
+        foreach (var merged in dictionary.MergedDictionaries.Reverse())
+        {
+            if (FindDirect(merged, key) is Color found)
+            {
+                return found;
+            }
+        }
+        return Value(dictionary, key);
     }
 
     private static Color? Value(ResourceDictionary d, string key) =>

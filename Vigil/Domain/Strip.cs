@@ -48,13 +48,12 @@ public sealed record StripData(
     {
         if (Readings.Count == 0)
         {
-            return "Vitals strip: no readings yet.";
+            return Loc.T("Strip_Empty", "Vitals strip: no readings yet.");
         }
         var last = Readings[^1];
         var at = Origin.AddMinutes(last.Minute);
-        return $"Vitals strip: {Readings.Count} readings, last at {at:HH:mm}: heart rate {last.Hr?.ToString() ?? "not recorded"}, " +
-            $"blood pressure {last.Sys?.ToString() ?? "-"} over {last.Dia?.ToString() ?? "-"}, SpO2 {last.SpO2?.ToString() ?? "not recorded"}. " +
-            "Use the Table view for every value.";
+        return Loc.F("Strip_Summary", "Vitals strip: {0} readings, last at {1:HH:mm}: heart rate {2}, blood pressure {3} over {4}, SpO2 {5}. Use the Table view for every value.",
+            Readings.Count, at, last.Hr?.ToString() ?? "-", last.Sys?.ToString() ?? "-", last.Dia?.ToString() ?? "-", last.SpO2?.ToString() ?? "-");
     }
 
     private static string Abbreviate(string name) => name.Length <= 5 ? name : name[..4];

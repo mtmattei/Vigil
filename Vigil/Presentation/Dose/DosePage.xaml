@@ -15,7 +15,7 @@
 
     <utu:NavigationBar Content="{Binding Patient}" Background="{ThemeResource SurfaceBrush}">
       <utu:NavigationBar.MainCommand>
-        <AppBarButton Label="Cancel" AutomationProperties.Name="Close the dose sheet" Command="{Binding Cancel}">
+        <AppBarButton x:Uid="Dose_1" Label="Cancel" AutomationProperties.Name="Close the dose sheet" Command="{Binding Cancel}">
           <AppBarButton.Icon>
             <SymbolIcon Symbol="Cancel" />
           </AppBarButton.Icon>
@@ -40,8 +40,8 @@
           <RowDefinition Height="Auto" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRUG · sample formulary, not for clinical use" />
-        <ListView Grid.Row="1"
+        <TextBlock x:Uid="Dose_2" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRUG · sample formulary, not for clinical use" />
+        <ListView x:Uid="Dose_3" Grid.Row="1"
                   ItemsSource="{Binding Drugs}"
                   SelectionMode="Single"
                   AutomationProperties.Name="Drugs">
@@ -57,7 +57,7 @@
                   <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{x:Bind DrugClass}" />
                 </StackPanel>
                 <TextBlock Grid.Column="1" Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceVariantBrush}" VerticalAlignment="Center">
-                  <Run Text="{x:Bind MgPerMl}" /><Run Text=" mg/mL" />
+                  <Run Text="{x:Bind MgPerMl}" /><Run x:Uid="Dose_4" Text=" mg/mL" />
                 </TextBlock>
               </Grid>
             </DataTemplate>
@@ -70,7 +70,7 @@
                     Grid.Column="{utu:Responsive Narrowest=0, Normal=1}"
                     Grid.ColumnSpan="{utu:Responsive Narrowest=2, Normal=1}">
         <StackPanel Spacing="16">
-          <TextBox Header="Dose (mg/kg)"
+          <TextBox x:Uid="Dose_5" Header="Dose (mg/kg)"
                    InputScope="Number"
                    Text="{Binding MgPerKg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    AutomationProperties.Name="Dose in milligrams per kilogram" />
@@ -79,8 +79,8 @@
             <mvux:FeedView.ValueTemplate>
               <DataTemplate>
                 <StackPanel Spacing="6">
-                  <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRAW UP" />
-                  <TextBlock Style="{StaticResource DisplayLarge}"
+                  <TextBlock x:Uid="Dose_6" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRAW UP" />
+                  <TextBlock x:Uid="Dose_7" Style="{StaticResource DisplayLarge}"
                              Foreground="{ThemeResource OnSurfaceBrush}"
                              Text="{Binding Data.VolumeText}"
                              AutomationProperties.Name="Volume to draw up" />
@@ -88,12 +88,12 @@
                     <Run Text="{Binding Data.Formula}" />
                   </TextBlock>
                   <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}">
-                    <Run Text="Reference range" />
+                    <Run x:Uid="Dose_8" Text="Reference range" />
                     <Run Text="{Binding Data.ReferenceText}" />
                   </TextBlock>
                   <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding Data.IsOutOfRange}">
                     <FontIcon Glyph="&#xE7BA;" FontSize="18" Foreground="{ThemeResource ErrorBrush}" />
-                    <TextBlock Style="{StaticResource TitleSmall}" Foreground="{ThemeResource ErrorBrush}" Text="Outside the reference range: you will be asked to confirm." TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Uid="Dose_9" Style="{StaticResource TitleSmall}" Foreground="{ThemeResource ErrorBrush}" Text="Outside the reference range: you will be asked to confirm." TextWrapping="WrapWholeWords" />
                   </StackPanel>
                 </StackPanel>
               </DataTemplate>
@@ -101,27 +101,27 @@
             <mvux:FeedView.NoneTemplate>
               <DataTemplate>
                 <StackPanel Spacing="6">
-                  <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRAW UP" />
-                  <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="Pick a drug" />
-                  <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
+                  <TextBlock x:Uid="Dose_10" Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="DRAW UP" />
+                  <TextBlock x:Uid="Dose_11" Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="Pick a drug" />
+                  <TextBlock x:Uid="Dose_12" Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
                              Text="The volume appears here with its formula once a drug and a dose in mg/kg are set." />
                 </StackPanel>
               </DataTemplate>
             </mvux:FeedView.NoneTemplate>
           </mvux:FeedView>
 
-          <muxc:RadioButtons Header="Route" MaxColumns="4" SelectedIndex="{Binding RouteIndex, Mode=TwoWay}">
-            <x:String>IV</x:String>
-            <x:String>IM</x:String>
-            <x:String>SC</x:String>
-            <x:String>PO</x:String>
+          <muxc:RadioButtons x:Uid="Dose_13" Header="Route" MaxColumns="4" SelectedIndex="{Binding RouteIndex, Mode=TwoWay}">
+            <RadioButton x:Uid="Dose_14" Content="IV" />
+            <RadioButton x:Uid="Dose_15" Content="IM" />
+            <RadioButton x:Uid="Dose_16" Content="SC" />
+            <RadioButton x:Uid="Dose_17" Content="PO" />
           </muxc:RadioButtons>
           <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource ErrorBrush}" TextWrapping="WrapWholeWords" Text="{Binding Error}" />
         </StackPanel>
       </ScrollViewer>
 
       <Grid Grid.Row="2" Grid.ColumnSpan="2">
-        <Button Style="{StaticResource FilledButtonStyle}"
+        <Button x:Uid="Dose_18" Style="{StaticResource FilledButtonStyle}"
                 HorizontalAlignment="Stretch"
                 Content="Give dose"
                 Visibility="{Binding NotConfirming}"
@@ -144,8 +144,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Stretch" Content="Change dose" Command="{Binding ChangeDose}" />
-              <Button Grid.Column="1" Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Give anyway"
+              <Button x:Uid="Dose_19" Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Stretch" Content="Change dose" Command="{Binding ChangeDose}" />
+              <Button x:Uid="Dose_20" Grid.Column="1" Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Give anyway"
                       Command="{Binding GiveAnyway}" AutomationProperties.Name="Give the out-of-range dose anyway" />
             </Grid>
           </StackPanel>

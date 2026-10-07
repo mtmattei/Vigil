@@ -24,10 +24,10 @@ public partial record CaseSummary(
         var p = c.Patient;
         var time = c.Status switch
         {
-            CaseStatus.Anesthetized => $"Under {Schedule.HoursMinutes(Schedule.Elapsed(c, now))}",
-            CaseStatus.Recovery => c.Recovery.ExtubatedAt is DateTimeOffset x ? $"Extubated {x:HH:mm}" : $"Ended {c.EndedAt:HH:mm}",
-            CaseStatus.Signed => $"Signed {c.SignedAt:HH:mm}",
-            _ => $"Added {c.CreatedAt:HH:mm}",
+            CaseStatus.Anesthetized => Loc.F("Board_UnderTime", "Under {0}", Schedule.HoursMinutes(Schedule.Elapsed(c, now))),
+            CaseStatus.Recovery => c.Recovery.ExtubatedAt is DateTimeOffset x ? Loc.F("Board_ExtubatedTime", "Extubated {0:HH:mm}", x) : Loc.F("Board_EndedTime", "Ended {0:HH:mm}", c.EndedAt),
+            CaseStatus.Signed => Loc.F("Board_SignedTime", "Signed {0:HH:mm}", c.SignedAt),
+            _ => Loc.F("Board_AddedTime", "Added {0:HH:mm}", c.CreatedAt),
         };
         return new CaseSummary(
             c.Id,
@@ -42,10 +42,10 @@ public partial record CaseSummary(
 
     public static string StatusLabel(CaseStatus s) => s switch
     {
-        CaseStatus.Anesthetized => "Under anesthesia",
-        CaseStatus.Recovery => "Recovery",
-        CaseStatus.Signed => "Signed",
-        _ => "Scheduled",
+        CaseStatus.Anesthetized => Loc.T("Status_Anesthetized", "Under anesthesia"),
+        CaseStatus.Recovery => Loc.T("Status_Recovery", "Recovery"),
+        CaseStatus.Signed => Loc.T("Status_Signed", "Signed"),
+        _ => Loc.T("Status_Scheduled", "Scheduled"),
     };
 }
 
@@ -80,14 +80,14 @@ public partial record LiveCase(
         return new LiveCase(
             c.Id,
             p.Name,
-            $"{p.Species} · {p.WeightKg:0.0} kg · {c.Preop.AsaLabel}",
+            $"{Loc.Species(p.Species)} · {p.WeightKg:0.0} kg · {c.Preop.AsaLabel}",
             c.Procedure,
             Schedule.HoursMinutes(Schedule.Elapsed(c, now)),
-            due == DueState.Overdue ? "Reading overdue" : "Next reading",
+            due == DueState.Overdue ? Loc.T("Due_Overdue", "Reading overdue") : Loc.T("Due_Next", "Next reading"),
             Schedule.Clock(remaining.Duration()),
             due,
             Schedule.Progress(c, interval, now),
-            last is null ? "No readings yet" : $"Last {last.At:HH:mm} · HR {last.Hr?.ToString() ?? "—"} · SpO₂ {last.SpO2?.ToString() ?? "—"} · MAP {last.EffectiveMap?.ToString() ?? "—"}");
+            last is null ? Loc.T("Readings_None", "No readings yet") : Loc.F("Board_LastReading", "Last {0:HH:mm} · HR {1} · SpO₂ {2} · MAP {3}", last.At, last.Hr?.ToString() ?? "—", last.SpO2?.ToString() ?? "—", last.EffectiveMap?.ToString() ?? "—"));
     }
 }
 

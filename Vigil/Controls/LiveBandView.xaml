@@ -32,7 +32,7 @@
     </VisualStateManager.VisualStateGroups>
 
     <!-- States is set on the UserControl; the groups live on its first child (Toolkit doc contract). -->
-    <Button
+    <Button x:Uid="LiveBand_1"
             Style="{StaticResource TextButtonStyle}"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
@@ -55,7 +55,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Spacing="2">
-          <TextBlock Style="{StaticResource LabelLarge}"
+          <TextBlock x:Uid="LiveBand_2" Style="{StaticResource LabelLarge}"
                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
                      Text="UNDER ANESTHESIA" />
           <TextBlock Style="{StaticResource TitleLarge}"
@@ -71,11 +71,11 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
-          <TextBlock Style="{StaticResource DisplayLarge}"
+          <TextBlock x:Uid="LiveBand_3" Style="{StaticResource DisplayLarge}"
                      Foreground="{ThemeResource OnSurfaceBrush}"
                      Text="{Binding Elapsed}"
                      AutomationProperties.Name="Elapsed anesthesia time" />
-          <TextBlock Style="{StaticResource BodySmall}"
+          <TextBlock x:Uid="LiveBand_4" Style="{StaticResource BodySmall}"
                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
                      VerticalAlignment="Bottom"
                      Margin="0,0,0,12"
@@ -105,7 +105,7 @@
         </StackPanel>
 
         <!-- The due slot as a sight glass: fills from the last reading to the next one. -->
-        <ProgressBar x:Name="DueBar"
+        <ProgressBar x:Uid="LiveBand_5" x:Name="DueBar"
                      Grid.Row="2"
                      Grid.ColumnSpan="2"
                      Minimum="0"
