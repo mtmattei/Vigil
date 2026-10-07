@@ -1,17 +1,17 @@
 # HANDOFF — Vigil Phase 2 (rooted, non-stop loop)
-Updated: 2026-10-07 11:08 (America/Montreal)
+Updated: 2026-10-07 11:38 (America/Montreal)
 
 ## Where we are
 Rooted session with the App MCP (Healthy, 12 tools). Running `/loop` non-stop through SPEC.md's
 Implementation Plan and Phase 3 gates; the loop stops only when `docs/COMPLETENESS.md` + `docs/DEPLOY.md`
 exist with evidence and CI is green on every head, or on a user-only choice.
 
-Done: step 0 (build log), step 1 (foundation + Board, all four states proven), step 2 (repo `mtmattei/Vigil`
-private, CI; local Release publish desktop + WASM; Android publish running), step 3 (NewCase sheet, Record
-shell + tabs, Pre-op, Induce).
+Done: steps 0–7. Board, NewCase, Record (Pre-op, Drugs, Monitor strip + pad, Recovery), Dose sheet, Sign-off,
+Export, Settings, Theatre theme, full EN/FR (316 keys). Release path gate met: CI run 37638904753 green on all
+heads incl. iOS; local Release publish desktop/WASM/Android.
 
 ## Last verified state
-- Build: desktop 0 warnings. Tests 33/33. Lint gating 0.
+- Build: desktop 0 warnings. Tests 50/50. Lint gating 0. Git `main` at a5f9cff, pushed.
 - Runtime (App MCP desktop): Board Value/Loading/Empty/Error+Retry; NewCase validation + create; Pre-op
   round trip; Induce; tab persistence across ticks; Back; bands 420/700/1200 after detail + Back.
 - CI run 37638904753: tests, desktop ×3, WASM, Android green; iOS pending.
@@ -27,10 +27,9 @@ shell + tabs, Pre-op, Induce).
 | Gotcha: uno_app_start leaves old instance → always `Stop-Process Vigil` before relaunch | loop habit |
 
 ## Next actions (in order)
-1. Confirm CI iOS job and local Android publish (`artifacts/logs/publish-android.log`); log both.
-2. Step 4 Monitor: VitalsStrip (SKCanvasElement, palette snapshot on ActualThemeChanged), entry pad with 64 px
-   steppers pre-filled from last reading, RecordReading (≤4 taps), due states, Table toggle. Measure taps/seconds.
-3. Steps 5–9, then Phase 3 gates (break-it → gold-standard-pass → uno-audit → atlas extract → completeness →
+1. Step 8 persistence passes: WASM (reload), Android emulator (relaunch); R2 (SKCanvasElement on WASM/Android),
+   R5 (LocalFolder on WASM). Check latest CI runs.
+2. Phase 3 gates (break-it → gold-standard-pass → uno-audit → atlas extract → completeness →
    `docs/COMPLETENESS.md`, `docs/DEPLOY.md`).
 
 ## Open questions / findings so far
