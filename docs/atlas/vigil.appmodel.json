@@ -1,0 +1,138 @@
+{
+  "app": "Vigil",
+  "generatedAt": "2026-10-07T11:52:00.7249857-04:00",
+  "source": "static",
+  "schemaVersion": "1.0",
+  "nodes": [
+    {
+      "id": "board",
+      "name": "Board",
+      "kind": "page",
+      "route": "Board",
+      "view": "BoardPage",
+      "viewModel": "BoardModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 80,
+        "y": 185
+      }
+    },
+    {
+      "id": "newCase",
+      "name": "NewCase",
+      "kind": "page",
+      "route": "NewCase",
+      "view": "NewCasePage",
+      "viewModel": "NewCaseModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 80,
+        "y": 500
+      }
+    },
+    {
+      "id": "record",
+      "name": "Record",
+      "kind": "page",
+      "route": "Record",
+      "view": "RecordPage",
+      "viewModel": "RecordModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 360,
+        "y": 290
+      }
+    },
+    {
+      "id": "dose",
+      "name": "Dose",
+      "kind": "page",
+      "route": "Dose",
+      "view": "DosePage",
+      "viewModel": "DoseModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 640,
+        "y": 220
+      }
+    },
+    {
+      "id": "signOff",
+      "name": "SignOff",
+      "kind": "page",
+      "route": "SignOff",
+      "view": "SignOffPage",
+      "viewModel": "SignOffModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 640,
+        "y": 360
+      }
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "kind": "page",
+      "route": "Settings",
+      "view": "SettingsPage",
+      "viewModel": "SettingsModel",
+      "status": "normal",
+      "files": [],
+      "elements": [],
+      "tokens": [],
+      "position": {
+        "x": 360,
+        "y": 80
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "board",
+      "to": "settings",
+      "kind": "declared",
+      "trigger": "Board_2",
+      "isDefault": false,
+      "dependsOn": false
+    },
+    {
+      "from": "board",
+      "to": "record",
+      "kind": "declared",
+      "trigger": "Board_13",
+      "isDefault": false,
+      "dependsOn": false
+    },
+    {
+      "from": "record",
+      "to": "dose",
+      "kind": "declared",
+      "trigger": "Record_29",
+      "isDefault": false,
+      "dependsOn": false
+    },
+    {
+      "from": "record",
+      "to": "signOff",
+      "kind": "declared",
+      "trigger": "Record_77",
+      "isDefault": false,
+      "dependsOn": false
+    }
+  ]
+}

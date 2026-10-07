@@ -197,3 +197,15 @@ Desktop: restart persistence proven earlier (15th reading after relaunch); New c
 Findings: F-019..F-025 (phone clipping ×3 fixed, Android card washout fixed with the recorded workaround,
 WASM route-in-URL leak, WASM Create does not open the record, Android clipboard toast).
 Tests 50/50. Lint gating 0 (1 TEMPLATE + 1 WORKAROUND, both annotated).
+
+## 2026-10-07 12:00 — WASM navigation fixed (D5), route diff, CI budget block
+
+D5 (`AddressBarUpdateEnabled = false`): on WASM, New case → Create (Pistache) now opens the record and Back
+returns to the Board; no route or dialog text in the URL. F-023/F-024 verified.
+Atlas: `atlas extract` → 6 nodes, 4 XAML edges; built tree = spec tree, 3 code/UserControl edges explained in
+`docs/atlas/ROUTE-DIFF.md`.
+Blocked: CI runs 37643330218, 37644934790, 37644966575, 37647072013 never started a job: "The job was not
+started because an Actions budget is preventing further use." Last executed run (23ab49a) green on all heads
+it ran; run 37638904753 green on every head incl. iOS. Needs a user decision (budget, public repo, or accept).
+Surprise: a stale WASM dev server (PID 41684, 11:41) kept port 5000, so a relaunch exited silently and tabs
+loaded old code; `uno_app_start` did not stop it.

@@ -33,8 +33,8 @@ Status: `new` → `assigned` → `fixed` → `verified` (or `wontfix` with a DEC
 | F-020 | P3 | Board (Android) | A4 | Phone: "All" chip clipped by the New case button | android-1.png | Presentation/Board | fixed | head pass |
 | F-021 | P3 | Settings (Android) | A4 | Phone: theme radios wrap column-first (System, Theatre / Paper) | android-settings.png | Presentation/Settings | fixed | head pass |
 | F-022 | P2 | shared (Android) | A8 | Card keeps its pressed overlay after a swipe that starts on it (recorded Toolkit gotcha) | android-settings2.png | Themes/Controls.xaml | fixed | head pass |
-| F-023 | P3 | shared (WASM) | A3 | Message-dialog route and its text are pushed into the address bar (`/Settings/xxxxmessagedialogxxxx?…title=Load sample day…`); later the URL reads `/Board` while Settings shows | wasm-3.png, wasm-4.png | shared | new | head pass |
-| F-024 | P2 | NewCase (WASM) | A1 | WASM: Create saves the case but the record does not open; the first tab's URL stays `/Board/NewCase`. Desktop: trace shows `Some(CaseRef)` + Record navigation success=True | wasm-3.png tab title | Presentation/Board | new | head pass |
+| F-023 | P3 | shared (WASM) | A3 | Message-dialog route and its text are pushed into the address bar (`/Settings/xxxxmessagedialogxxxx?…title=Load sample day…`); later the URL reads `/Board` while Settings shows | wasm-3.png, wasm-4.png | shared | verified (D5) | head pass |
+| F-024 | P2 | NewCase (WASM) | A1 | WASM: Create saves the case but the record does not open; the first tab's URL stays `/Board/NewCase`. Desktop: trace shows `Some(CaseRef)` + Record navigation success=True | wasm-3.png tab title | Presentation/Board | verified (D5: Pistache created → record opened → Back to Board on WASM) | head pass |
 | F-025 | P3 | Record (Android) | A6 | Framework TextBox clipboard query shows "Vigil pasted from your clipboard" toast on opening Monitor (recorded gotcha) | android-monitor.png | Controls/VitalStepper | new | head pass |
 
 ## Regression lines added by fixers

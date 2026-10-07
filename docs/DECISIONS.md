@@ -40,3 +40,13 @@ Reason: measured on desktop: the message dialog opened from the `!Dose` flyout d
 "Change dose" returned the user to the record with the entry lost. The dialog also rendered Fluent chrome with
 "Give anyway" as the default (accent) button.
 Tradeoff: no modal focus trap; the confirmation is announced through a LiveSetting region instead.
+
+## D5. No address-bar routing on WebAssembly (2026-10-07)
+
+Decision: `NavigationConfiguration.AddressBarUpdateEnabled = false`.
+Reason: measured on WASM, navigation wrote the message dialog's route and full text into the URL
+(`/Settings/xxxxmessagedialogxxxx?…title=Load sample day…`), the URL drifted from the visible page (`/Board`
+while Settings showed), and Create from the `!NewCase` sheet saved the case but left the app on the Board with
+the URL stuck at `/Board/NewCase`. For an anesthesia record, browser history must not hold dialog text or
+record routes either.
+Tradeoff: no deep links or browser Back on the web head; the in-app Back (NavigationBar) is the only back path.

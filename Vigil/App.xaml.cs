@@ -78,7 +78,11 @@ public partial class App : Application
                     services.AddSingleton<ICaseStore>(_ => new JsonCaseStore(
                         Path.Combine(ApplicationData.Current.LocalFolder.Path, "cases"), fault));
                 })
-                .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
+                .UseNavigation(
+                    ReactiveViewModelMappings.ViewModelMappings,
+                    RegisterRoutes,
+                    // WASM: keep routes, dialog text and record ids out of the address bar and browser history (D5).
+                    configure: config => config with { AddressBarUpdateEnabled = false })
             );
         MainWindow = builder.Window;
         UiThread.Queue = MainWindow.DispatcherQueue;
