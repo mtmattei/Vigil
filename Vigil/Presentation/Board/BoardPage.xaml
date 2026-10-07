@@ -114,7 +114,7 @@
           </StackPanel>
           <Button Grid.Column="1"
                   Style="{StaticResource FilledButtonStyle}"
-                  uen:Navigation.Request="!NewCase"
+                  Command="{Binding NewCase}"
                   AutomationProperties.Name="New case">
             <StackPanel Orientation="Horizontal" Spacing="8">
               <SymbolIcon Symbol="Add" />
@@ -135,9 +135,10 @@
                                   uen:Navigation.Request="Record"
                                   AutomationProperties.Name="Cases">
                 <muxc:ItemsRepeater.Layout>
-                  <muxc:UniformGridLayout MaximumRowsOrColumns="{utu:Responsive Narrowest=1, Wide=2}"
+                  <!-- Two columns once each can be 360 wide: the layout derives columns from width (Responsive cannot attach to a non-FrameworkElement). -->
+                  <muxc:UniformGridLayout MaximumRowsOrColumns="2"
                                           ItemsStretch="Fill"
-                                          MinItemWidth="300"
+                                          MinItemWidth="360"
                                           MinColumnSpacing="16"
                                           MinRowSpacing="16" />
                 </muxc:ItemsRepeater.Layout>
@@ -248,7 +249,7 @@
                   <Button Style="{StaticResource OutlinedButtonStyle}"
                           HorizontalAlignment="Left"
                           Content="New case"
-                          uen:Navigation.Request="!NewCase" />
+                          Command="{Binding DataContext.NewCase, ElementName=CasesFeed}" />
                 </StackPanel>
               </utu:CardContentControl>
             </DataTemplate>

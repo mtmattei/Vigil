@@ -12,7 +12,11 @@ public enum DoseRoute { IV, IM, SC, PO }
 
 public partial record CaseRef(Guid Id);
 
-public partial record Patient(string Name, Species Species, string Breed, decimal WeightKg, decimal AgeYears, string Owner);
+public partial record Patient(string Name, Species Species, string Breed, decimal WeightKg, decimal AgeYears, string Owner)
+{
+    /// <summary>"Canine · Labrador retriever", skipping a blank breed.</summary>
+    public string SpeciesAndBreed => string.IsNullOrWhiteSpace(Breed) ? Species.ToString() : $"{Species} · {Breed}";
+}
 
 public partial record PreopCheck(
     bool Fasted,

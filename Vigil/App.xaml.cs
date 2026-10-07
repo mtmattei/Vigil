@@ -127,11 +127,15 @@ public partial class App : Application
     private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
     {
         views.Register(
-            new ViewMap<BoardPage, BoardModel>()
+            new ViewMap<BoardPage, BoardModel>(),
+            new ViewMap<NewCasePage, NewCaseModel>(ResultData: typeof(CaseRef)),
+            new DataViewMap<RecordPage, RecordModel, CaseRef>()
         );
 
         routes.Register(
-            new RouteMap("Board", View: views.FindByViewModel<BoardModel>(), IsDefault: true)
+            new RouteMap("Board", View: views.FindByViewModel<BoardModel>(), IsDefault: true),
+            new RouteMap("NewCase", View: views.FindByViewModel<NewCaseModel>()),
+            new RouteMap("Record", View: views.FindByViewModel<RecordModel>())
         );
     }
 }

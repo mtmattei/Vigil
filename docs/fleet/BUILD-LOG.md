@@ -73,3 +73,27 @@ Quote: "The only 64 px number on the board is how long the patient has been asle
 Threads: 0.
 
 Correction (10:40): the step 1 entry above is stamped 10:52; the milestone was actually logged at 10:39.
+
+## 2026-10-07 11:05 — Step 2 release path (CI) + Step 3 NewCase → Record shell, Pre-op, Induce
+
+Came back: private repo `mtmattei/Vigil`, `main` pushed; CI adapted from Patina (VigilTargetFrameworks
+override). NewCase sheet (`!NewCase` for a `CaseRef` result), Record page with inline Visibility tabs,
+Pre-op checklist + ASA + Induce, model-owned tab state.
+Numbers: CI run 37638904753: tests, desktop win/linux/osx, WASM, Android green; iOS pending at log time.
+Local Release publish: desktop win-x64 exit 0 in 25 s; WASM exit 0 in 518 s. 33/33 tests, lint 0.
+Runtime (App MCP, desktop): validation shows exactly the one missing field; Create saves and lists Nova;
+5 checklist toggles + ASA II round-trip through `Parent.Preop` TwoWay → store → `Case` feed ("5 of 5 checks");
+Induce → Anesthetized, elapsed 00:00, next 4:59; Drugs tab holds across ≥4 clock ticks; Back → Board; bands
+420 (1 col) / 700 / 1200 (2 col) after detail + Back.
+Surprises:
+- `OneTime` SelectedIndex inside a FeedView ValueTemplate re-applies on every 1 Hz `Data` swap: a user's tab
+  choice would reset each second. Moved to a model `IState<int> Tab`.
+- `{utu:Responsive}` cannot attach to `UniformGridLayout` (log: "Neither DP owner ... is a FrameworkElement");
+  replaced with `MaximumRowsOrColumns=2` + `MinItemWidth=360`.
+- `uno_app_get_screenshot` returns a blank frame on the Record page and omits flyout popups; PrintWindow
+  (`tools/Capture-Window.ps1`) shows both rendering correctly.
+- `TabBarItem` has no automation peer (`peer_action select` fails): tabs need pointer clicks in automation,
+  and a screen reader gets no tab semantics. Logged for break-it/a11y.
+- Hot Design opened three times during the run with no matching tool action (once with the window maximized);
+  a controlled Back did not reproduce it.
+Threads: 0.

@@ -32,7 +32,7 @@ public partial record CaseSummary(
         return new CaseSummary(
             c.Id,
             p.Name,
-            $"{p.Species} · {p.Breed} · {p.WeightKg:0.0} kg",
+            $"{p.SpeciesAndBreed} · {p.WeightKg:0.0} kg",
             c.Procedure,
             $"{c.Veterinarian} · {c.Technician}",
             c.Status,
@@ -91,7 +91,7 @@ public partial record LiveCase(
     }
 }
 
-public partial record BoardModel(ICaseStore Store, IClock Clock, IPreferences Preferences)
+public partial record BoardModel(ICaseStore Store, IClock Clock, IPreferences Preferences, INavigator Navigator)
 {
     // One shared source, reloaded by the store's change signal: the list and the live band fail and
     // recover together. Retry raises the same signal (FeedView.Refresh does not recover an upstream failure).
@@ -114,6 +114,16 @@ public partial record BoardModel(ICaseStore Store, IClock Clock, IPreferences Pr
         .Select(x => LiveCase.From(x.Item1, x.Item2, Preferences.ReadingInterval)!);
 
     public void Retry() => Store.Reload();
+
+    /// <summary>Opens the New case sheet; on Create, opens the new record with the board behind it (Back returns here).</summary>
+    public async ValueTask NewCase(CancellationToken ct)
+    {
+        var result = await Navigator.NavigateRouteForResultAsync<CaseRef>(this, "!NewCase", cancellation: ct).AsResult();
+        if (result.SomeOrDefault() is CaseRef created)
+        {
+            await Navigator.NavigateRouteAsync(this, "Record", data: created, cancellation: ct);
+        }
+    }
 
     public async ValueTask ShowAll(CancellationToken ct) => await Filter.UpdateAsync(_ => BoardFilter.All, ct);
 
