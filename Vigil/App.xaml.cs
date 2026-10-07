@@ -129,13 +129,15 @@ public partial class App : Application
         views.Register(
             new ViewMap<BoardPage, BoardModel>(),
             new ViewMap<NewCasePage, NewCaseModel>(ResultData: typeof(CaseRef)),
-            new DataViewMap<RecordPage, RecordModel, CaseRef>()
+            new DataViewMap<RecordPage, RecordModel, CaseRef>(),
+            new DataViewMap<DosePage, DoseModel, CaseRef>()
         );
 
         routes.Register(
             new RouteMap("Board", View: views.FindByViewModel<BoardModel>(), IsDefault: true),
             new RouteMap("NewCase", View: views.FindByViewModel<NewCaseModel>()),
-            new RouteMap("Record", View: views.FindByViewModel<RecordModel>())
+            new RouteMap("Record", View: views.FindByViewModel<RecordModel>()),
+            new RouteMap("Dose", View: views.FindByViewModel<DoseModel>())
         );
     }
 }

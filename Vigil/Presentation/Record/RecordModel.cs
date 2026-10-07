@@ -39,6 +39,11 @@ public partial record CaseView(
 
     public bool CanInduce => IsScheduled && Preop.IsComplete;
 
+    /// <summary>Doses and readings can be added until the record is signed.</summary>
+    public bool CanChange => !IsSigned;
+
+    public bool HasNoDoses => Doses.Count == 0;
+
     public const int MonitorTab = 2;
 
     public const int RecoveryTab = 3;

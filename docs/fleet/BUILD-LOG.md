@@ -120,3 +120,19 @@ Surprises:
   replaced with a Toolkit `FilterChipStyle` chip.
 - Two-column pad at 420 px squeezed the value box to ~20 px ("45" showed "4"): buttons 56 px below Normal.
 Threads: 0.
+
+## 2026-10-07 11:16 — Step 5: Drugs tab + Dose sheet
+
+Came back: `!Dose` sheet (formulary list with MVUX `Selection`, mg/kg pre-filled with the drug default, route
+pre-set, computed volume at 64 px with formula and reference range), Drugs tab list + Give a dose, Pre-op
+"Give premedication". Inline out-of-range confirmation (DECISIONS D4).
+Numbers: Atropine 0.02 mg/kg for 18.4 kg → 0.68 mL (18.4 × 0.02 = 0.368 mg ÷ 0.54 mg/mL); 0.2 mg/kg → 6.81 mL,
+flagged, confirmed, listed "Out of range, confirmed". Tests 47/47.
+Surprises:
+- MVUX bindable generator emitted invalid C# for a record member named `Class` (lowercased to the keyword
+  `class`): ~45 CS errors. Renamed to `DrugClass`.
+- The recorded `record struct` generator gotcha hit `VitalRange` once it rode inside a feed (CS0019/CS0023).
+- The message dialog dismissed the flyout it was opened from (D4).
+- The formula line read "… ÷ 0.54 mg/mL = 0.37 mg" (arithmetic order wrong as written); now
+  "18.4 kg × 0.02 mg/kg = 0.368 mg ÷ 0.54 mg/mL".
+Threads: 0.

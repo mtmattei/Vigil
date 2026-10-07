@@ -4,7 +4,7 @@ namespace Vigil.Domain;
 public partial record Drug(
     string Id,
     string Name,
-    string Class,
+    string DrugClass,
     decimal MgPerMl,
     decimal DefaultMgPerKg,
     decimal CanineMinMgPerKg,
@@ -43,10 +43,10 @@ public static class Dosing
 
     public static DoseCalc Calculate(Species species, decimal weightKg, Drug drug, decimal mgPerKg)
     {
-        var totalMg = Math.Round(weightKg * mgPerKg, 2, MidpointRounding.AwayFromZero);
+        var totalMg = Math.Round(weightKg * mgPerKg, 3, MidpointRounding.AwayFromZero);
         var volume = VolumeMl(weightKg, mgPerKg, drug.MgPerMl);
         var reference = drug.RangeFor(species);
-        var formula = $"{weightKg:0.##} kg × {mgPerKg:0.###} mg/kg ÷ {drug.MgPerMl:0.##} mg/mL";
+        var formula = $"{weightKg:0.##} kg × {mgPerKg:0.###} mg/kg = {totalMg:0.###} mg ÷ {drug.MgPerMl:0.##} mg/mL";
         return new DoseCalc(weightKg, mgPerKg, drug.MgPerMl, totalMg, volume, reference.Classify(mgPerKg), reference, formula);
     }
 }

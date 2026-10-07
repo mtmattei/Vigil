@@ -4,7 +4,8 @@ public enum RangeClass { Low, Normal, High }
 
 public enum VitalKind { Hr, Rr, SpO2, EtCo2, Sys, Dia, Map, TempC }
 
-public readonly record struct VitalRange(decimal Min, decimal Max)
+// A class, not a record struct: the MVUX bindable generator cannot proxy record structs (CS0019/CS0023).
+public sealed record VitalRange(decimal Min, decimal Max)
 {
     public RangeClass Classify(decimal value) => value < Min ? RangeClass.Low : value > Max ? RangeClass.High : RangeClass.Normal;
 }

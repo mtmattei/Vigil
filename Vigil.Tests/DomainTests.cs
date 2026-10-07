@@ -38,7 +38,7 @@ public class DosingTests
     public void CalculationCarriesFormulaAndReference()
     {
         var calc = Dosing.Calculate(Species.Canine, 18.4m, Dexmed, 0.005m);
-        calc.Formula.Should().Be("18.4 kg × 0.005 mg/kg ÷ 0.5 mg/mL");
+        calc.Formula.Should().Be("18.4 kg × 0.005 mg/kg = 0.092 mg ÷ 0.5 mg/mL");
         calc.VolumeText.Should().Be("0.18 mL");
         calc.ReferenceText.Should().Be("0.001–0.01 mg/kg");
         calc.IsOutOfRange.Should().BeFalse();
