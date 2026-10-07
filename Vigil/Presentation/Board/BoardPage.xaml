@@ -1,0 +1,285 @@
+<Page x:Class="Vigil.Presentation.BoardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+      xmlns:controls="using:Vigil.Controls"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <utu:NavigationBar Content="Vigil"
+                       Background="{ThemeResource BackgroundBrush}"
+                       AutomationProperties.Name="Vigil, today's surgical board">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Label="Settings"
+                      AutomationProperties.Name="Settings"
+                      uen:Navigation.Request="Settings">
+          <AppBarButton.Icon>
+            <SymbolIcon Symbol="Setting" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Live case band: the board's anchor, full-bleed at every width. -->
+    <!-- xaml-lint: allow card - full-bleed band with hairline dividers, not a card -->
+    <Border Grid.Row="1"
+            Background="{ThemeResource SurfaceVariantBrush}"
+            BorderBrush="{ThemeResource OutlineBrush}"
+            BorderThickness="0,1">
+      <mvux:FeedView x:Name="LiveFeed"
+                     Source="{Binding Live}"
+                     MinHeight="240"
+                     RefreshingState="None"
+                     IsTabStop="False">
+        <mvux:FeedView.ValueTemplate>
+          <DataTemplate>
+            <controls:LiveBandView DataContext="{Binding Data}" />
+          </DataTemplate>
+        </mvux:FeedView.ValueTemplate>
+
+        <mvux:FeedView.ProgressTemplate>
+          <DataTemplate>
+            <!-- Skeleton of the band: label, title, display number, bar. -->
+            <StackPanel Padding="{utu:Responsive Narrow='16,16', Wide='32,20'}" Spacing="12">
+              <Rectangle Width="140" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource OutlineBrush}" />
+              <Rectangle Width="260" Height="22" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource OutlineBrush}" />
+              <Rectangle Width="180" Height="60" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource OutlineBrush}" />
+              <Rectangle Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource OutlineBrush}" />
+            </StackPanel>
+          </DataTemplate>
+        </mvux:FeedView.ProgressTemplate>
+
+        <mvux:FeedView.NoneTemplate>
+          <DataTemplate>
+            <StackPanel Padding="{utu:Responsive Narrow='16,16', Wide='32,20'}"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+              <TextBlock Style="{StaticResource LabelLarge}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         Text="UNDER ANESTHESIA" />
+              <TextBlock Style="{StaticResource HeadlineMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}"
+                         Text="No patient under anesthesia" />
+              <TextBlock Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         Text="Induce a case from its Pre-op tab and it appears here with its reading countdown." />
+            </StackPanel>
+          </DataTemplate>
+        </mvux:FeedView.NoneTemplate>
+
+        <mvux:FeedView.ErrorTemplate>
+          <DataTemplate>
+            <StackPanel Padding="{utu:Responsive Narrow='16,16', Wide='32,20'}" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Style="{StaticResource LabelLarge}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         Text="UNDER ANESTHESIA" />
+              <TextBlock Style="{StaticResource HeadlineMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         Text="Live case unavailable" />
+            </StackPanel>
+          </DataTemplate>
+        </mvux:FeedView.ErrorTemplate>
+      </mvux:FeedView>
+    </Border>
+
+    <!-- Case list -->
+    <ScrollViewer Grid.Row="2">
+      <StackPanel Padding="{utu:Responsive Narrow='16,16,16,24', Wide='32,24,32,32'}" Spacing="16" MaxWidth="1280">
+        <Grid ColumnSpacing="12">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <TextBlock Style="{StaticResource HeadlineMedium}"
+                       Foreground="{ThemeResource OnBackgroundBrush}"
+                       VerticalAlignment="Center"
+                       Text="Cases" />
+            <utu:ChipGroup Style="{StaticResource FilterChipGroupStyle}"
+                           SelectionMode="Single"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0">
+              <utu:Chip Content="Today" IsChecked="True" Command="{Binding ShowToday}" AutomationProperties.Name="Show today's cases" />
+              <utu:Chip Content="All" Command="{Binding ShowAll}" AutomationProperties.Name="Show all cases" />
+            </utu:ChipGroup>
+          </StackPanel>
+          <Button Grid.Column="1"
+                  Style="{StaticResource FilledButtonStyle}"
+                  uen:Navigation.Request="!NewCase"
+                  AutomationProperties.Name="New case">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <SymbolIcon Symbol="Add" />
+              <TextBlock Text="New case" />
+            </StackPanel>
+          </Button>
+        </Grid>
+
+        <mvux:FeedView x:Name="CasesFeed"
+                       Source="{Binding Today}"
+                       MinHeight="300"
+                       VerticalContentAlignment="Top"
+                       RefreshingState="None"
+                       IsTabStop="False">
+          <mvux:FeedView.ValueTemplate>
+            <DataTemplate>
+              <muxc:ItemsRepeater ItemsSource="{Binding Data}"
+                                  uen:Navigation.Request="Record"
+                                  AutomationProperties.Name="Cases">
+                <muxc:ItemsRepeater.Layout>
+                  <muxc:UniformGridLayout MaximumRowsOrColumns="{utu:Responsive Narrowest=1, Wide=2}"
+                                          ItemsStretch="Fill"
+                                          MinItemWidth="300"
+                                          MinColumnSpacing="16"
+                                          MinRowSpacing="16" />
+                </muxc:ItemsRepeater.Layout>
+                <muxc:ItemsRepeater.ItemTemplate>
+                  <DataTemplate>
+                    <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            IsTabStop="True"
+                                            AutomationProperties.Name="{Binding Name}">
+                      <Grid Padding="16" RowSpacing="4" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource TitleLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   Text="{Binding Name}" />
+                        <TextBlock Grid.Column="1"
+                                   Style="{StaticResource CodeTextStyle}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding TimeText}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.ColumnSpan="2"
+                                   Style="{StaticResource BodySmall}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Signalment}" />
+                        <TextBlock Grid.Row="2"
+                                   Grid.ColumnSpan="2"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Procedure}" />
+                        <Grid Grid.Row="3" Grid.ColumnSpan="2" Margin="0,8,0,0" ColumnSpacing="8">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Style="{StaticResource LabelLarge}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     Text="{Binding StatusText}" />
+                          <TextBlock Grid.Column="1"
+                                     Style="{StaticResource BodySmall}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     HorizontalAlignment="Right"
+                                     TextTrimming="CharacterEllipsis"
+                                     Text="{Binding Team}" />
+                        </Grid>
+                      </Grid>
+                    </utu:CardContentControl>
+                  </DataTemplate>
+                </muxc:ItemsRepeater.ItemTemplate>
+              </muxc:ItemsRepeater>
+            </DataTemplate>
+          </mvux:FeedView.ValueTemplate>
+
+          <mvux:FeedView.ProgressTemplate>
+            <DataTemplate>
+              <!-- Skeleton: three case cards at the populated card's size. -->
+              <StackPanel Spacing="16">
+                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                  <StackPanel Padding="16" Spacing="10">
+                    <Rectangle Width="120" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="220" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="260" Height="16" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="100" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                  </StackPanel>
+                </utu:CardContentControl>
+                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                  <StackPanel Padding="16" Spacing="10">
+                    <Rectangle Width="140" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="200" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="240" Height="16" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="90" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                  </StackPanel>
+                </utu:CardContentControl>
+                <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                  <StackPanel Padding="16" Spacing="10">
+                    <Rectangle Width="100" Height="20" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="230" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="200" Height="16" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                    <Rectangle Width="110" Height="14" HorizontalAlignment="Left" RadiusX="6" RadiusY="6" Fill="{ThemeResource SurfaceVariantBrush}" />
+                  </StackPanel>
+                </utu:CardContentControl>
+              </StackPanel>
+            </DataTemplate>
+          </mvux:FeedView.ProgressTemplate>
+
+          <mvux:FeedView.NoneTemplate>
+            <DataTemplate>
+              <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
+                  <TextBlock Style="{StaticResource TitleLarge}"
+                             Foreground="{ThemeResource OnSurfaceBrush}"
+                             Text="No cases today. Start the first one." />
+                  <TextBlock Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="WrapWholeWords"
+                             Text="A case holds one anesthetic procedure: pre-op check, doses, vitals every five minutes, recovery and sign-off." />
+                  <Button Style="{StaticResource OutlinedButtonStyle}"
+                          HorizontalAlignment="Left"
+                          Content="New case"
+                          uen:Navigation.Request="!NewCase" />
+                </StackPanel>
+              </utu:CardContentControl>
+            </DataTemplate>
+          </mvux:FeedView.NoneTemplate>
+
+          <mvux:FeedView.ErrorTemplate>
+            <DataTemplate>
+              <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False">
+                <StackPanel Padding="24" Spacing="12" HorizontalAlignment="Left">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE783;" FontSize="20" Foreground="{ThemeResource ErrorBrush}" />
+                    <TextBlock Style="{StaticResource TitleLarge}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Text="Couldn't read saved records." />
+                  </StackPanel>
+                  <TextBlock Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="WrapWholeWords"
+                             Text="{Binding Message}" />
+                  <!-- ErrorTemplate DataContext is the Exception: reach the page model by ElementName. -->
+                  <Button Style="{StaticResource OutlinedButtonStyle}"
+                          HorizontalAlignment="Left"
+                          Content="Retry"
+                          AutomationProperties.Name="Retry reading records"
+                          Command="{Binding DataContext.Retry, ElementName=CasesFeed}" />
+                </StackPanel>
+              </utu:CardContentControl>
+            </DataTemplate>
+          </mvux:FeedView.ErrorTemplate>
+        </mvux:FeedView>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Page>

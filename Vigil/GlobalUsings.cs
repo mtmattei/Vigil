@@ -7,4 +7,7 @@ global using Microsoft.Extensions.Options;
 global using Vigil.Models;
 global using Vigil.Presentation;
 global using ApplicationExecutionState = Windows.ApplicationModel.Activation.ApplicationExecutionState;
+global using Vigil.Domain;
+global using Vigil.Services;
+global using Windows.Storage;
 [assembly: Uno.Extensions.Reactive.Config.BindableGenerationTool(3)]

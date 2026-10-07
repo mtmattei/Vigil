@@ -67,32 +67,71 @@ public partial class App : Application
                 .UseLocalization()
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    var fault = FaultInjection.FromEnvironment();
+                    services.AddSingleton<IFaultInjection>(fault);
+                    services.AddSingleton<IClock, SystemClock>();
+                    services.AddSingleton<IPreferences, Preferences>();
+                    services.AddSingleton<IFormulary, EmbeddedFormulary>();
+                    services.AddSingleton<ICaseStore>(_ => new JsonCaseStore(
+                        Path.Combine(ApplicationData.Current.LocalFolder.Path, "cases"), fault));
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
         MainWindow = builder.Window;
 
-        #if DEBUG
-        MainWindow.UseStudio();
+#if DEBUG
+        // UseStudio() carries the App MCP connection on desktop; headless capture runs opt out.
+        if (Environment.GetEnvironmentVariable("APP_NO_HOTDESIGN") != "1")
+        {
+            MainWindow.UseStudio();
+        }
 #endif
-                MainWindow.SetWindowIcon();
+        MainWindow.SetWindowIcon();
 
         Host = await MainWindow.InitializeNavigationAsync(
-            () => Task.FromResult(builder.Build()),
-            initialRoute: "Main"
+            async () =>
+            {
+                var host = builder.Build();
+#if DEBUG
+                await SeedForVerificationAsync(host.Services);
+#endif
+                return host;
+            },
+            initialRoute: "Board"
         );
     }
+
+#if DEBUG
+    /// <summary>Verification hook: <c>--vigil-seed=sample</c> loads the sample day, <c>--vigil-seed=empty</c> clears the store.</summary>
+    private static async Task SeedForVerificationAsync(IServiceProvider services)
+    {
+        var seed = Environment.GetCommandLineArgs()
+            .FirstOrDefault(a => a.StartsWith("--vigil-seed=", StringComparison.OrdinalIgnoreCase))?.Split('=', 2)[1];
+        if (seed is null)
+        {
+            return;
+        }
+        var store = services.GetRequiredService<ICaseStore>();
+        var clock = services.GetRequiredService<IClock>();
+        await store.ClearAsync(CancellationToken.None);
+        if (seed == "sample")
+        {
+            foreach (var c in SampleDay.Create(clock.Now))
+            {
+                await store.SaveAsync(c, CancellationToken.None);
+            }
+        }
+    }
+#endif
 
     private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
     {
         views.Register(
-            new ViewMap<MainPage, MainModel>()
+            new ViewMap<BoardPage, BoardModel>()
         );
 
         routes.Register(
-            new RouteMap("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true)
+            new RouteMap("Board", View: views.FindByViewModel<BoardModel>(), IsDefault: true)
         );
     }
 }

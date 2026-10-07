@@ -1,0 +1,18 @@
+{
+  "note": "Sample reference data for the Vigil reference app. Not for clinical use: a practice supplies its own concentrations and ranges.",
+  "drugs": [
+    { "id": "dexmedetomidine", "name": "Dexmedetomidine", "class": "Sedative", "mgPerMl": 0.5, "defaultMgPerKg": 0.005, "canineMinMgPerKg": 0.001, "canineMaxMgPerKg": 0.01, "felineMinMgPerKg": 0.001, "felineMaxMgPerKg": 0.015, "defaultRoute": "IM" },
+    { "id": "acepromazine", "name": "Acepromazine", "class": "Sedative", "mgPerMl": 10, "defaultMgPerKg": 0.02, "canineMinMgPerKg": 0.01, "canineMaxMgPerKg": 0.05, "felineMinMgPerKg": 0.01, "felineMaxMgPerKg": 0.05, "defaultRoute": "IM" },
+    { "id": "midazolam", "name": "Midazolam", "class": "Benzodiazepine", "mgPerMl": 5, "defaultMgPerKg": 0.2, "canineMinMgPerKg": 0.1, "canineMaxMgPerKg": 0.3, "felineMinMgPerKg": 0.1, "felineMaxMgPerKg": 0.3, "defaultRoute": "IV" },
+    { "id": "hydromorphone", "name": "Hydromorphone", "class": "Opioid", "mgPerMl": 2, "defaultMgPerKg": 0.1, "canineMinMgPerKg": 0.05, "canineMaxMgPerKg": 0.2, "felineMinMgPerKg": 0.025, "felineMaxMgPerKg": 0.1, "defaultRoute": "IM" },
+    { "id": "methadone", "name": "Methadone", "class": "Opioid", "mgPerMl": 10, "defaultMgPerKg": 0.3, "canineMinMgPerKg": 0.1, "canineMaxMgPerKg": 0.5, "felineMinMgPerKg": 0.1, "felineMaxMgPerKg": 0.3, "defaultRoute": "IM" },
+    { "id": "butorphanol", "name": "Butorphanol", "class": "Opioid", "mgPerMl": 10, "defaultMgPerKg": 0.2, "canineMinMgPerKg": 0.1, "canineMaxMgPerKg": 0.4, "felineMinMgPerKg": 0.1, "felineMaxMgPerKg": 0.4, "defaultRoute": "IM" },
+    { "id": "propofol", "name": "Propofol", "class": "Induction", "mgPerMl": 10, "defaultMgPerKg": 4, "canineMinMgPerKg": 2, "canineMaxMgPerKg": 6, "felineMinMgPerKg": 2, "felineMaxMgPerKg": 8, "defaultRoute": "IV" },
+    { "id": "alfaxalone", "name": "Alfaxalone", "class": "Induction", "mgPerMl": 10, "defaultMgPerKg": 2, "canineMinMgPerKg": 1, "canineMaxMgPerKg": 3, "felineMinMgPerKg": 1, "felineMaxMgPerKg": 5, "defaultRoute": "IV" },
+    { "id": "ketamine", "name": "Ketamine", "class": "Induction", "mgPerMl": 100, "defaultMgPerKg": 5, "canineMinMgPerKg": 2, "canineMaxMgPerKg": 10, "felineMinMgPerKg": 2, "felineMaxMgPerKg": 10, "defaultRoute": "IV" },
+    { "id": "cefazolin", "name": "Cefazolin", "class": "Antibiotic", "mgPerMl": 100, "defaultMgPerKg": 22, "canineMinMgPerKg": 20, "canineMaxMgPerKg": 25, "felineMinMgPerKg": 20, "felineMaxMgPerKg": 25, "defaultRoute": "IV" },
+    { "id": "meloxicam", "name": "Meloxicam", "class": "NSAID", "mgPerMl": 5, "defaultMgPerKg": 0.2, "canineMinMgPerKg": 0.1, "canineMaxMgPerKg": 0.2, "felineMinMgPerKg": 0.05, "felineMaxMgPerKg": 0.3, "defaultRoute": "SC" },
+    { "id": "atropine", "name": "Atropine", "class": "Anticholinergic", "mgPerMl": 0.54, "defaultMgPerKg": 0.02, "canineMinMgPerKg": 0.02, "canineMaxMgPerKg": 0.04, "felineMinMgPerKg": 0.02, "felineMaxMgPerKg": 0.04, "defaultRoute": "IV" },
+    { "id": "atipamezole", "name": "Atipamezole", "class": "Reversal", "mgPerMl": 5, "defaultMgPerKg": 0.05, "canineMinMgPerKg": 0.025, "canineMaxMgPerKg": 0.1, "felineMinMgPerKg": 0.025, "felineMaxMgPerKg": 0.1, "defaultRoute": "IM" }
+  ]
+}
