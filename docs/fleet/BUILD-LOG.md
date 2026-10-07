@@ -136,3 +136,24 @@ Surprises:
 - The formula line read "… ÷ 0.54 mg/mL = 0.37 mg" (arithmetic order wrong as written); now
   "18.4 kg × 0.02 mg/kg = 0.368 mg ÷ 0.54 mg/mL".
 Threads: 0.
+
+## 2026-10-07 11:24 — Step 6: Recovery, Sign-off, read-only record, Export
+
+Came back: Recovery tab (End anesthesia, Extubated now, Sternal now, pain 0–4, temp, notes, auto-saved),
+recovery anchor at 64 px, `!SignOff` sheet (duration + readings at display scale, typed name + confirmation),
+signed record read-only, Export CSV through `FileSavePicker`, Copy summary to the clipboard.
+Numbers: Bella signed after 01:26 of anesthesia, 16 readings, 5 doses (1 out of range, confirmed), 1 alarm
+reading. Export: 22-line CSV (header + 16 readings + 5 doses, time-ordered) through the native save dialog
+(driven by `tools/Complete-SaveDialog.ps1`); notice "Saved Bella-2026-10-07-anesthesia.csv.". Copy summary
+put the 12-line plain-text record on the clipboard (user clipboard backed up and restored around the test).
+Tests 50/50. Lint 0.
+Surprises:
+- An injected `IDispatcher` in a singleton service resolved null (window-scoped): Copy summary threw
+  NullReferenceException and the MVUX command swallowed it silently (no log line, no notice). Fixed with the
+  window `DispatcherQueue` captured at launch (`Services/UiThread.cs`) and every hand-off now reports failures.
+- UIA `ValuePattern.SetValue` on the Win32 save dialog's file-name box was refused (0x800704C7); IDOK with the
+  suggested name worked. The test export landed in the user's OneDrive Documents and was moved to `artifacts/`.
+- Overdue showed as "next 6:22" in the record header and Record button (absolute value of a negative remaining
+  time). Now "overdue 6:22".
+- `--vigil-seed=sample` clears the store by design; a case created during testing (Nova) went with it.
+Threads: 0.

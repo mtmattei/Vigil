@@ -72,12 +72,14 @@ public partial class App : Application
                     services.AddSingleton<IClock, SystemClock>();
                     services.AddSingleton<IPreferences, Preferences>();
                     services.AddSingleton<IFormulary, EmbeddedFormulary>();
+                    services.AddSingleton<IRecordExporter, RecordExporter>();
                     services.AddSingleton<ICaseStore>(_ => new JsonCaseStore(
                         Path.Combine(ApplicationData.Current.LocalFolder.Path, "cases"), fault));
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
         MainWindow = builder.Window;
+        UiThread.Queue = MainWindow.DispatcherQueue;
 
 #if DEBUG
         // UseStudio() carries the App MCP connection on desktop; headless capture runs opt out.
@@ -130,14 +132,16 @@ public partial class App : Application
             new ViewMap<BoardPage, BoardModel>(),
             new ViewMap<NewCasePage, NewCaseModel>(ResultData: typeof(CaseRef)),
             new DataViewMap<RecordPage, RecordModel, CaseRef>(),
-            new DataViewMap<DosePage, DoseModel, CaseRef>()
+            new DataViewMap<DosePage, DoseModel, CaseRef>(),
+            new DataViewMap<SignOffPage, SignOffModel, CaseRef>()
         );
 
         routes.Register(
             new RouteMap("Board", View: views.FindByViewModel<BoardModel>(), IsDefault: true),
             new RouteMap("NewCase", View: views.FindByViewModel<NewCaseModel>()),
             new RouteMap("Record", View: views.FindByViewModel<RecordModel>()),
-            new RouteMap("Dose", View: views.FindByViewModel<DoseModel>())
+            new RouteMap("Dose", View: views.FindByViewModel<DoseModel>()),
+            new RouteMap("SignOff", View: views.FindByViewModel<SignOffModel>())
         );
     }
 }

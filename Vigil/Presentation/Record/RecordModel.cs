@@ -29,8 +29,31 @@ public partial record CaseView(
     int ReadingCount,
     StripData Strip,
     string StripSummary,
-    string LastRecorded) : CaseRef(Id)
+    string LastRecorded,
+    string RecoveryAnchor,
+    string RecoveryAnchorLabel,
+    string ExtubatedText,
+    string SternalText,
+    string SignedText) : CaseRef(Id)
 {
+    public bool IsRecovery => Status == CaseStatus.Recovery;
+
+    /// <summary>"next 2:41" while waiting, "overdue 0:40" once late: the sign is in the words, not hidden by an absolute value.</summary>
+    public string ClockText => DueStateName switch
+    {
+        nameof(DueState.Overdue) => $"overdue {NextText}",
+        nameof(DueState.None) => "",
+        _ => $"next {NextText}",
+    };
+
+    public bool IsNotAnesthetized => !IsAnesthetized;
+
+    public bool CanEditRecovery => Status == CaseStatus.Recovery;
+
+    public bool IsNotExtubated => IsRecovery && ExtubatedText.Length == 0;
+
+    public bool IsNotSternal => IsRecovery && SternalText.Length == 0;
+
     public bool IsScheduled => Status == CaseStatus.Scheduled;
 
     public bool IsAnesthetized => Status == CaseStatus.Anesthetized;
@@ -86,7 +109,13 @@ public partial record CaseView(
             c.Readings.Count,
             strip,
             strip.Summary(p.Species),
-            c.Readings.Count > 0 ? $"Last recorded {c.Readings[^1].At:HH:mm}" : "No readings yet");
+            c.Readings.Count > 0 ? $"Last recorded {c.Readings[^1].At:HH:mm}" : "No readings yet",
+            // A signed record stops its recovery clock at the signature.
+            c.Recovery.ExtubatedAt is DateTimeOffset x ? Schedule.HoursMinutes((c.SignedAt ?? now) - x) : c.EndedAt is DateTimeOffset e ? Schedule.HoursMinutes((c.SignedAt ?? now) - e) : "—",
+            c.Recovery.ExtubatedAt is not null ? "since extubation" : c.EndedAt is not null ? "since anesthesia ended (not extubated)" : "anesthesia not ended",
+            c.Recovery.ExtubatedAt is DateTimeOffset ex ? $"Extubated {ex:HH:mm}" : "",
+            c.Recovery.SternalAt is DateTimeOffset st ? $"Sternal {st:HH:mm}" : "",
+            c.SignedBy is { } by ? $"Signed by {by} at {c.SignedAt:HH:mm}. The record is read-only." : "");
     }
 
     private static ReadingRow Row(Species species, VitalsReading r)
@@ -109,7 +138,7 @@ public partial record CaseView(
         d.OutOfRangeConfirmed ? "Out of range, confirmed" : "");
 }
 
-public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, IPreferences Preferences, INavigator Navigator)
+public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, IPreferences Preferences, IRecordExporter Exporter, INavigator Navigator)
 {
     // The stored case; null (deleted or never existed) renders the None template.
     private IFeed<Case> Source { get; } = Feed<Case>.Async(
@@ -188,6 +217,50 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
     }
 
     public async ValueTask DismissError(CancellationToken ct) => await SaveError.UpdateAsync(_ => "", ct);
+
+    /// <summary>The editable part of the recovery log, saved on every change while the case is in recovery.</summary>
+    public IState<RecoveryDraft> Recovery => State
+        .Async(this, async ct => RecoveryDraft.From((await Store.GetAsync(Ref.Id, ct))?.Recovery ?? RecoveryLog.Empty))
+        .ForEach(async (draft, ct) =>
+        {
+            if (draft is not null)
+            {
+                await SaveAsync(c => c.Status == CaseStatus.Recovery ? c with { Recovery = draft.ApplyTo(c.Recovery) } : c, ct);
+            }
+        });
+
+    /// <summary>Outcome of the last export, shown under the export buttons.</summary>
+    public IState<string> Notice => State.Value(this, () => "");
+
+    public async ValueTask EndAnesthesia(CancellationToken ct)
+    {
+        await SaveAsync(c => c.Status == CaseStatus.Anesthetized ? c with { Status = CaseStatus.Recovery, EndedAt = Clock.Now } : c, ct);
+        await Tab.UpdateAsync(_ => CaseView.RecoveryTab, ct);
+    }
+
+    public async ValueTask Extubate(CancellationToken ct) =>
+        await SaveAsync(c => c.Status == CaseStatus.Recovery ? c with { Recovery = c.Recovery with { ExtubatedAt = Clock.Now } } : c, ct);
+
+    public async ValueTask Sternal(CancellationToken ct) =>
+        await SaveAsync(c => c.Status == CaseStatus.Recovery ? c with { Recovery = c.Recovery with { SternalAt = Clock.Now } } : c, ct);
+
+    public async ValueTask Export(CancellationToken ct) => await HandOffAsync(Exporter.ExportCsvAsync, ct);
+
+    public async ValueTask CopySummary(CancellationToken ct) => await HandOffAsync(Exporter.CopySummaryAsync, ct);
+
+    private async ValueTask HandOffAsync(Func<Case, CancellationToken, ValueTask<string>> action, CancellationToken ct)
+    {
+        string outcome;
+        try
+        {
+            outcome = await Store.GetAsync(Ref.Id, ct) is { } c ? await action(c, ct) : "This record no longer exists.";
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            outcome = $"Export failed: {ex.GetType().Name}: {ex.Message}";
+        }
+        await Notice.UpdateAsync(_ => outcome, ct);
+    }
 
     private async ValueTask SavePreopAsync(PreopCheck? preop, CancellationToken ct)
     {

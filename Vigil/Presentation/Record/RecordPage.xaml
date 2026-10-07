@@ -83,8 +83,7 @@
                 <TextBlock Style="{StaticResource CodeTextStyle}"
                            Foreground="{ThemeResource OnSurfaceVariantBrush}"
                            Visibility="{utu:Responsive Narrowest=Collapsed, Normal=Visible}">
-                  <Run Text="next" />
-                  <Run Text="{Binding Data.NextText}" />
+                  <Run Text="{Binding Data.ClockText}" />
                 </TextBlock>
               </StackPanel>
             </Grid>
@@ -334,7 +333,7 @@
                       <StackPanel Orientation="Horizontal" Spacing="12">
                         <SymbolIcon Symbol="Accept" />
                         <TextBlock Text="Record reading" />
-                        <TextBlock Style="{StaticResource CodeTextStyle}" Text="{Binding Data.NextText}" />
+                        <TextBlock Style="{StaticResource CodeTextStyle}" Text="{Binding Data.ClockText}" />
                       </StackPanel>
                     </Button>
                     <Grid ColumnSpacing="{utu:Responsive Narrowest=8, Normal=16}" RowSpacing="16">
@@ -408,10 +407,78 @@
                 </Grid>
               </ScrollViewer>
 
-              <!-- RECOVERY -->
+              <!-- RECOVERY: anchor is the time since extubation. -->
               <ScrollViewer uen:Region.Name="Recovery" Visibility="Collapsed">
-                <StackPanel Padding="{utu:Responsive Narrow='16,16,16,32', Wide='32,24,32,40'}" Spacing="16" MaxWidth="960" HorizontalAlignment="Stretch">
-                  <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" Text="{Binding Data.StatusText}" />
+                <StackPanel Padding="{utu:Responsive Narrow='16,16,16,32', Wide='32,24,32,40'}" Spacing="24" MaxWidth="960" HorizontalAlignment="Stretch">
+
+                  <!-- Under anesthesia: the only action here is ending it. -->
+                  <StackPanel Spacing="8" Visibility="{Binding Data.IsAnesthetized}">
+                    <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}" Text="Patient is under anesthesia" />
+                    <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords"
+                               Text="End anesthesia when the vaporizer is off. The reading clock stops and recovery starts." />
+                    <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="End anesthesia"
+                            Command="{Binding Parent.EndAnesthesia}" AutomationProperties.Name="End anesthesia" />
+                  </StackPanel>
+
+                  <StackPanel Spacing="4" Visibility="{Binding Data.IsNotAnesthetized}">
+                    <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="RECOVERY" />
+                    <TextBlock Style="{StaticResource DisplayLarge}" Foreground="{ThemeResource OnBackgroundBrush}" Text="{Binding Data.RecoveryAnchor}"
+                               AutomationProperties.Name="Time in recovery" />
+                    <TextBlock Style="{StaticResource BodyMedium}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.RecoveryAnchorLabel}" />
+                  </StackPanel>
+
+                  <utu:CardContentControl Style="{StaticResource OutlinedCardContentControlStyle}" HorizontalAlignment="Stretch" IsTabStop="False"
+                                          Visibility="{Binding Data.IsNotAnesthetized}">
+                    <StackPanel Padding="20" Spacing="12">
+                      <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Recovery log" />
+                      <Grid ColumnSpacing="12" RowSpacing="12">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="6">
+                          <Button Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Extubated now"
+                                  Visibility="{Binding Data.IsNotExtubated}" Command="{Binding Parent.Extubate}" AutomationProperties.Name="Record extubation now" />
+                          <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.ExtubatedText}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="6">
+                          <Button Style="{StaticResource OutlinedButtonStyle}" HorizontalAlignment="Stretch" Content="Sternal now"
+                                  Visibility="{Binding Data.IsNotSternal}" Command="{Binding Parent.Sternal}" AutomationProperties.Name="Record sternal recumbency now" />
+                          <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnSurfaceBrush}" Text="{Binding Data.SternalText}" />
+                        </StackPanel>
+                      </Grid>
+                      <muxc:RadioButtons Header="Pain score (0 none to 4 severe)"
+                                         MaxColumns="6"
+                                         IsEnabled="{Binding Data.CanEditRecovery}"
+                                         SelectedIndex="{Binding Parent.Recovery.PainIndex, Mode=TwoWay}">
+                        <x:String>Not scored</x:String>
+                        <x:String>0</x:String>
+                        <x:String>1</x:String>
+                        <x:String>2</x:String>
+                        <x:String>3</x:String>
+                        <x:String>4</x:String>
+                      </muxc:RadioButtons>
+                      <TextBox Header="Temperature (°C)" InputScope="Number" MaxWidth="240" HorizontalAlignment="Left"
+                               IsEnabled="{Binding Data.CanEditRecovery}"
+                               Text="{Binding Parent.Recovery.TempC, Mode=TwoWay}" />
+                      <TextBox Header="Notes" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"
+                               IsEnabled="{Binding Data.CanEditRecovery}"
+                               Text="{Binding Parent.Recovery.Notes, Mode=TwoWay}" />
+                    </StackPanel>
+                  </utu:CardContentControl>
+
+                  <StackPanel Spacing="8">
+                    <Button Style="{StaticResource FilledButtonStyle}" HorizontalAlignment="Left" MinWidth="220" Content="Sign off"
+                            Visibility="{Binding Data.IsRecovery}"
+                            uen:Navigation.Request="!SignOff" uen:Navigation.Data="{Binding Data}"
+                            AutomationProperties.Name="Sign off the record" />
+                    <TextBlock Style="{StaticResource TitleMedium}" Foreground="{ThemeResource OnBackgroundBrush}" TextWrapping="WrapWholeWords" Text="{Binding Data.SignedText}" />
+                    <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{Binding Data.IsSigned}">
+                      <Button Style="{StaticResource FilledButtonStyle}" Content="Export CSV" Command="{Binding Parent.Export}" AutomationProperties.Name="Export the record as CSV" />
+                      <Button Style="{StaticResource OutlinedButtonStyle}" Content="Copy summary" Command="{Binding Parent.CopySummary}" AutomationProperties.Name="Copy a text summary" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Parent.Notice}" AutomationProperties.LiveSetting="Polite" />
+                  </StackPanel>
                 </StackPanel>
               </ScrollViewer>
             </Grid>
