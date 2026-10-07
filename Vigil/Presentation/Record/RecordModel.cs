@@ -26,7 +26,10 @@ public partial record CaseView(
     double ProgressPercent,
     IImmutableList<ReadingRow> Readings,
     IImmutableList<DoseRow> Doses,
-    int ReadingCount) : CaseRef(Id)
+    int ReadingCount,
+    StripData Strip,
+    string StripSummary,
+    string LastRecorded) : CaseRef(Id)
 {
     public bool IsScheduled => Status == CaseStatus.Scheduled;
 
@@ -53,6 +56,7 @@ public partial record CaseView(
         var p = c.Patient;
         var due = Schedule.State(c, interval, now);
         var remaining = Schedule.Remaining(c, interval, now) ?? TimeSpan.Zero;
+        var strip = StripData.From(c, now, interval);
         return new CaseView(
             c.Id,
             p.Name,
@@ -74,7 +78,10 @@ public partial record CaseView(
             Schedule.Progress(c, interval, now) * 100,
             c.Readings.Reverse().Select(r => Row(p.Species, r)).ToImmutableList(),
             c.Doses.Reverse().Select(DoseRowOf).ToImmutableList(),
-            c.Readings.Count);
+            c.Readings.Count,
+            strip,
+            strip.Summary(p.Species),
+            c.Readings.Count > 0 ? $"Last recorded {c.Readings[^1].At:HH:mm}" : "No readings yet");
     }
 
     private static ReadingRow Row(Species species, VitalsReading r)
@@ -125,6 +132,48 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
 
     public void Retry() => Store.Reload();
 
+    /// <summary>The Monitor pad, pre-filled from the last reading. Single writer: the pad; reset by RecordReading.</summary>
+    public IState<VitalsDraft> Draft => State.Async(this, async ct =>
+        VitalsDraft.From((await Store.GetAsync(Ref.Id, ct))?.Readings.LastOrDefault()));
+
+    public IFeed<DraftFlags> Flags => Feed.Combine(Draft, Source).Select(x => DraftFlags.From(x.Item1, x.Item2.Patient.Species));
+
+    /// <summary>Strip or table: the table is the accessible alternative to the drawing.</summary>
+    public IState<bool> ShowTable => State.Value(this, () => false);
+
+    public IFeed<bool> ShowStrip => ShowTable.Select(t => !t);
+
+    public async ValueTask Step(string arg, CancellationToken ct) =>
+        await Draft.UpdateAsync(d => (d ?? VitalsDraft.Empty).Step(arg), ct);
+
+    public async ValueTask ToggleTable(CancellationToken ct) => await ShowTable.UpdateAsync(v => !v, ct);
+
+    public async ValueTask RecordReading(VitalsDraft draft, CancellationToken ct)
+    {
+        var errors = draft.Validate();
+        if (errors.Count > 0)
+        {
+            await SaveError.UpdateAsync(_ => string.Join(" ", errors), ct);
+            return;
+        }
+        var reading = draft.ToReading(Clock.Now);
+        var saved = false;
+        await SaveAsync(c =>
+        {
+            if (c.Status != CaseStatus.Anesthetized)
+            {
+                throw new InvalidOperationException("Induce before recording vitals.");
+            }
+            saved = true;
+            return c with { Readings = c.Readings.Add(reading) };
+        }, ct);
+        if (saved)
+        {
+            // Next reading starts from this one: an unchanged patient is a single tap.
+            await Draft.UpdateAsync(_ => VitalsDraft.From(reading), ct);
+        }
+    }
+
     public async ValueTask Induce(CancellationToken ct)
     {
         await SaveAsync(c => c.Status == CaseStatus.Scheduled
@@ -151,7 +200,7 @@ public partial record RecordModel(CaseRef Ref, ICaseStore Store, IClock Clock, I
             await Store.UpdateAsync(Ref.Id, update, ct);
             await SaveError.UpdateAsync(_ => "", ct);
         }
-        catch (Exception ex) when (ex is IOException or SignedRecordException or KeyNotFoundException)
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or KeyNotFoundException)
         {
             await SaveError.UpdateAsync(_ => $"Not saved: {ex.Message}", ct);
         }

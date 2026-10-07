@@ -6,6 +6,7 @@
       xmlns:uen="using:Uno.Extensions.Navigation.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
       xmlns:local="using:Vigil.Presentation"
+      xmlns:controls="using:Vigil.Controls"
       Background="{ThemeResource BackgroundBrush}">
 
   <Grid utu:SafeArea.Insets="VisibleBounds">
@@ -214,35 +215,172 @@
                 </StackPanel>
               </ScrollViewer>
 
-              <!-- MONITOR -->
+              <!-- MONITOR: the strip (at least 40 %) beside the pad on wide, above it on narrow. -->
               <ScrollViewer uen:Region.Name="Monitor" Visibility="Collapsed">
-                <StackPanel Padding="{utu:Responsive Narrow='16,16,16,32', Wide='32,24,32,40'}" Spacing="16" MaxWidth="1280" HorizontalAlignment="Stretch">
-                  <TextBlock Style="{StaticResource HeadlineMedium}" Foreground="{ThemeResource OnBackgroundBrush}">
-                    <Run Text="{Binding Data.ReadingCount}" />
-                    <Run Text="readings" />
-                  </TextBlock>
-                  <ItemsControl ItemsSource="{Binding Data.Readings}" AutomationProperties.Name="Readings table">
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate x:DataType="local:ReadingRow">
-                        <Grid Padding="0,8" ColumnSpacing="12" BorderBrush="{ThemeResource OutlineBrush}" BorderThickness="0,0,0,1">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="56" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-                          <TextBlock Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{x:Bind Time}" />
-                          <TextBlock Grid.Column="1" Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceBrush}" TextWrapping="Wrap">
-                            <Run Text="HR" /> <Run Text="{x:Bind Hr}" />
-                            <Run Text=" SpO₂" /> <Run Text="{x:Bind SpO2}" />
-                            <Run Text=" BP" /> <Run Text="{x:Bind Bp}" />
-                            <Run Text=" MAP" /> <Run Text="{x:Bind Map}" />
-                            <Run Text=" EtCO₂" /> <Run Text="{x:Bind EtCo2}" />
-                            <Run Text=" T" /> <Run Text="{x:Bind Temp}" />
-                          </TextBlock>
-                        </Grid>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </StackPanel>
+                <Grid Padding="{utu:Responsive Narrow='12,12,12,24', Wide='24,16,24,24'}" ColumnSpacing="20" RowSpacing="16">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="4*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <utu:CardContentControl Grid.ColumnSpan="{utu:Responsive Narrowest=2, Widest=1}"
+                                          Style="{StaticResource OutlinedCardContentControlStyle}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Top"
+                                          IsTabStop="False">
+                    <Grid Padding="16" RowSpacing="8">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <Grid>
+                        <StackPanel Spacing="2">
+                          <TextBlock Style="{StaticResource TitleLarge}" Foreground="{ThemeResource OnSurfaceBrush}" Text="Five-minute strip" />
+                          <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{Binding Data.LastRecorded}" />
+                        </StackPanel>
+                        <!-- A filter chip: Material's default ToggleButton is an icon toggle that blanks its text when checked. -->
+                        <utu:Chip HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Style="{StaticResource FilterChipStyle}"
+                                  CanRemove="False"
+                                  Content="Table"
+                                  IsChecked="{Binding Parent.ShowTable, Mode=TwoWay}"
+                                  AutomationProperties.Name="Show readings as a table" />
+                      </Grid>
+                      <controls:VitalsStrip Grid.Row="1"
+                                            Height="{utu:Responsive Narrowest=300, Widest=440}"
+                                            Data="{Binding Data.Strip}"
+                                            Visibility="{Binding Parent.ShowStrip}"
+                                            AutomationProperties.Name="{Binding Data.StripSummary}" />
+                      <!-- Same footprint as the strip, so the pad below never moves when the table is on. -->
+                      <ScrollViewer Grid.Row="1"
+                                    Height="{utu:Responsive Narrowest=300, Widest=440}"
+                                    Visibility="{Binding Parent.ShowTable}">
+                      <ItemsControl ItemsSource="{Binding Data.Readings}"
+                                    AutomationProperties.Name="Readings table">
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate x:DataType="local:ReadingRow">
+                            <Grid Padding="0,8" ColumnSpacing="12" BorderBrush="{ThemeResource OutlineBrush}" BorderThickness="0,0,0,1">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56" />
+                                <ColumnDefinition Width="*" />
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{x:Bind Time}" />
+                              <StackPanel Grid.Column="1" Spacing="2">
+                                <TextBlock Style="{StaticResource CodeTextStyle}" Foreground="{ThemeResource OnSurfaceBrush}" TextWrapping="Wrap">
+                                  <Run Text="HR" /> <Run Text="{x:Bind Hr}" />
+                                  <Run Text=" RR" /> <Run Text="{x:Bind Rr}" />
+                                  <Run Text=" SpO₂" /> <Run Text="{x:Bind SpO2}" />
+                                  <Run Text=" BP" /> <Run Text="{x:Bind Bp}" />
+                                  <Run Text=" MAP" /> <Run Text="{x:Bind Map}" />
+                                  <Run Text=" EtCO₂" /> <Run Text="{x:Bind EtCo2}" />
+                                  <Run Text=" T" /> <Run Text="{x:Bind Temp}" />
+                                  <Run Text=" " /> <Run Text="{x:Bind Plane}" />
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource LabelLarge}" Foreground="{ThemeResource ErrorBrush}" Text="{x:Bind Alarms}" />
+                                <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" Text="{x:Bind Note}" />
+                              </StackPanel>
+                            </Grid>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                      </ScrollViewer>
+                    </Grid>
+                  </utu:CardContentControl>
+
+                  <!-- The pad: pre-filled from the last reading; an unchanged patient is one tap on Record. -->
+                  <StackPanel Grid.Row="{utu:Responsive Narrowest=1, Widest=0}"
+                              Grid.Column="{utu:Responsive Narrowest=0, Widest=1}"
+                              Grid.ColumnSpan="{utu:Responsive Narrowest=2, Widest=1}"
+                              Spacing="16">
+                    <Button Style="{StaticResource FilledButtonStyle}"
+                            HorizontalAlignment="Stretch"
+                            Height="64"
+                            IsEnabled="{Binding Data.IsAnesthetized}"
+                            Command="{Binding Parent.RecordReading}"
+                            AutomationProperties.Name="Record reading">
+                      <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="R" />
+                      </Button.KeyboardAccelerators>
+                      <StackPanel Orientation="Horizontal" Spacing="12">
+                        <SymbolIcon Symbol="Accept" />
+                        <TextBlock Text="Record reading" />
+                        <TextBlock Style="{StaticResource CodeTextStyle}" Text="{Binding Data.NextText}" />
+                      </StackPanel>
+                    </Button>
+                    <Grid ColumnSpacing="{utu:Responsive Narrowest=8, Normal=16}" RowSpacing="16">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                        <controls:VitalStepper Grid.Row="0" Grid.Column="0" Field="Hr" Label="HR" Unit="bpm" Glyph="●" GlyphBrush="{ThemeResource VitalHrBrush}"
+                                               SpokenName="heart rate, beats per minute"
+                                               Text="{Binding Parent.Draft.Hr, Mode=TwoWay}" Flag="{Binding Parent.Flags.Hr}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="0" Grid.Column="1" Field="Rr" Label="RR" Unit="/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                                               SpokenName="respiratory rate, breaths per minute"
+                                               Text="{Binding Parent.Draft.Rr, Mode=TwoWay}" Flag="{Binding Parent.Flags.Rr}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="1" Grid.Column="0" Field="SpO2" Label="SpO₂" Unit="%" Glyph="○" GlyphBrush="{ThemeResource VitalSpO2Brush}"
+                                               SpokenName="oxygen saturation, percent"
+                                               Text="{Binding Parent.Draft.SpO2, Mode=TwoWay}" Flag="{Binding Parent.Flags.SpO2}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="1" Grid.Column="1" Field="EtCo2" Label="EtCO₂" Unit="mmHg" Glyph="×" GlyphBrush="{ThemeResource VitalEtCo2Brush}"
+                                               SpokenName="end-tidal CO2, millimetres of mercury"
+                                               Text="{Binding Parent.Draft.EtCo2, Mode=TwoWay}" Flag="{Binding Parent.Flags.EtCo2}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="2" Grid.Column="0" Field="Sys" Label="SYS" Unit="mmHg" Glyph="∨" GlyphBrush="{ThemeResource VitalBpBrush}"
+                                               SpokenName="systolic pressure"
+                                               Text="{Binding Parent.Draft.Sys, Mode=TwoWay}" Flag="{Binding Parent.Flags.Sys}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="2" Grid.Column="1" Field="Dia" Label="DIA" Unit="mmHg" Glyph="∧" GlyphBrush="{ThemeResource VitalBpBrush}"
+                                               SpokenName="diastolic pressure"
+                                               Text="{Binding Parent.Draft.Dia, Mode=TwoWay}" Flag="{Binding Parent.Flags.Dia}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="3" Grid.Column="0" Field="Map" Label="MAP" Unit="mmHg" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                                               SpokenName="mean arterial pressure"
+                                               Text="{Binding Parent.Draft.Map, Mode=TwoWay}" Flag="{Binding Parent.Flags.Map}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="3" Grid.Column="1" Field="TempC" Label="Temp" Unit="°C" Glyph="■" GlyphBrush="{ThemeResource VitalTempBrush}"
+                                               SpokenName="temperature, degrees Celsius"
+                                               Text="{Binding Parent.Draft.TempC, Mode=TwoWay}" Flag="{Binding Parent.Flags.TempC}"
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="4" Grid.Column="0" Field="Vaporizer" Label="Sevo" Unit="%" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                                               SpokenName="vaporizer setting, percent"
+                                               Text="{Binding Parent.Draft.Vaporizer, Mode=TwoWay}" 
+                                               Command="{Binding Parent.Step}" />
+                        <controls:VitalStepper Grid.Row="4" Grid.Column="1" Field="O2" Label="O₂" Unit="L/min" Glyph="" GlyphBrush="{ThemeResource OnSurfaceVariantBrush}"
+                                               SpokenName="oxygen flow, litres per minute"
+                                               Text="{Binding Parent.Draft.O2, Mode=TwoWay}" 
+                                               Command="{Binding Parent.Step}" />
+                    </Grid>
+                    <TextBlock Style="{StaticResource BodySmall}" Foreground="{ThemeResource OnSurfaceVariantBrush}" TextWrapping="WrapWholeWords">
+                      <Run Text="MAP left blank is derived as (SYS + 2·DIA) / 3:" />
+                      <Run Text="{Binding Parent.Flags.MapHint}" />
+                    </TextBlock>
+                    <muxc:RadioButtons Header="Anesthetic plane"
+                                       MaxColumns="3"
+                                       SelectedIndex="{Binding Parent.Draft.PlaneIndex, Mode=TwoWay}">
+                      <x:String>Light</x:String>
+                      <x:String>Surgical</x:String>
+                      <x:String>Deep</x:String>
+                    </muxc:RadioButtons>
+                    <TextBox Header="Note (optional)"
+                             Text="{Binding Parent.Draft.Note, Mode=TwoWay}"
+                             AutomationProperties.Name="Note for this reading" />
+                  </StackPanel>
+                </Grid>
               </ScrollViewer>
 
               <!-- RECOVERY -->

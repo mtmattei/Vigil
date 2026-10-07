@@ -97,3 +97,26 @@ Surprises:
 - Hot Design opened three times during the run with no matching tool action (once with the window maximized);
   a controlled Back did not reproduce it.
 Threads: 0.
+
+## 2026-10-07 11:14 — Step 4: Monitor (the five-minute strip + entry pad)
+
+Came back: `VitalsStrip` (`SKCanvasElement`, palette snapshot on `ActualThemeChanged`, Plex Mono labels loaded
+once, 200 ms new-column fade on a one-shot timer, no frame loop), `VitalStepper` pad (56/64 px buttons,
+RepeatButton long-press, accessible names), `VitalsDraft` pre-filled from the last reading, range flags as text,
+Table toggle bounded to the strip footprint, due slot at the next reading's column.
+Numbers (riskiest assumption, measured by peer actions on desktop):
+- Unchanged patient: **1 tap** (Record). HR +4: **3 taps** (+, +, Record), 0.62 s of automation time.
+  Human seconds per reading are not measured: no vet tech has used it (VALIDATION.md next test).
+- Vitals series contrast (R3 closed): min 4.68:1 (HR on #F3F5F2), all ≥ 4.68 light / ≥ 6.86 dark.
+- Tests 47/47 (+14: draft steps/validation/flags, strip placement, summary). Lint 0.
+- Local Release Android APK: exit 0 in 246 s, 54.9 MB signed APK.
+Runtime: HR 45 / SYS 85 → "▼ Low" text flags, red alarm marker, MAP calc 70; Table view rows carry
+"HR ▼ low · SYS ▼ low"; persistence across app restart (15th reading present after relaunch); 420 px band.
+Surprises:
+- Plex Mono has no ●∨∧○■: the strip legend drew tofu. Legend now draws the same shapes the strip uses.
+- The due slot first sat on *now*'s column and overlapped the reading just taken; it now sits where the next
+  reading lands.
+- Material's default `ToggleButton` is an icon toggle that hides its text when checked ("Table" vanished):
+  replaced with a Toolkit `FilterChipStyle` chip.
+- Two-column pad at 420 px squeezed the value box to ~20 px ("45" showed "4"): buttons 56 px below Normal.
+Threads: 0.
