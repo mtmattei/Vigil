@@ -71,3 +71,5 @@ Surprises:
 - Seeding fills the store cache, so the read fault must be driven on a run without `--vigil-seed`.
 Quote: "The only 64 px number on the board is how long the patient has been asleep."
 Threads: 0.
+
+Correction (10:40): the step 1 entry above is stamped 10:52; the milestone was actually logged at 10:39.
