@@ -51,11 +51,12 @@ internal static class ThemePalette
         return Value(dictionary, key);
     }
 
+    // Explicit Color? arms: the iOS compiler typed the switch as Color and rejected the null arm (CS0037).
     private static Color? Value(ResourceDictionary d, string key) =>
         d.TryGetValue(key, out var v) ? v switch
         {
-            Color c => c,
-            SolidColorBrush b => b.Color,
-            _ => null,
+            Color c => (Color?)c,
+            SolidColorBrush b => (Color?)b.Color,
+            _ => (Color?)null,
         } : null;
 }
