@@ -228,3 +228,12 @@ iOS build-only. `docs/DEPLOY.md`: Release builds for every head (local desktop/W
 distributed, CI not executing since 20f459e (Actions budget). Band due bar given a visible 6 px track
 (gold-standard Fit & Finish). Loop stops here on a user decision (CI budget).
 Totals: ~4,830 LOC app (C# + XAML), 50 unit tests, 27 findings (24 fixed/verified, 6 open), 5 decisions.
+
+## 2026-10-08 11:00 — CI green on every head (repo public)
+
+User made `mtmattei/Vigil` public. Run 37790804563 (3a41f89, 14:15Z): unit tests, desktop ×3, WASM, Android
+green; iOS failed `CS0037` at `Controls/ThemePalette.cs:59-60` (the iOS compiler typed the palette switch
+expression as `Color`, so the `null` arm did not convert; desktop accepted it). First iOS build since the
+ThemePalette rewrite, which landed during the budget block. Fix 9244b45: explicit `Color?` arms. Local desktop
+0 errors, tests 50/50. Run 37791335857 (9244b45): success on all 7 jobs, iOS 14:19:19Z → 14:59:14Z (40 min);
+Pages job skipped (opt-in). COMPLETENESS Majors 9 → 8; DEPLOY CI table updated. Loop stop condition met.

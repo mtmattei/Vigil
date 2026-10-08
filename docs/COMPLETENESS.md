@@ -1,6 +1,6 @@
 # Completeness audit: Vigil (2026-10-07, Uno.Sdk 6.7.30, heads: desktop, android, ios, wasm)
 
-Verdict: **Complete with gaps** (0 Blockers, 9 Majors, 12 Minors)
+Verdict: **Complete with gaps** (0 Blockers, 8 Majors, 12 Minors). Updated 2026-10-08: CI green on every head (run 37791335857).
 Safe to show (desktop, runtime-proven): every workflow below; on Android: board, sample day, Monitor strip,
 recording a reading, persistence; on WASM: board, new case → record, persistence.
 Keep off screen: export on Android/WASM/iOS (not run), anything on iOS (build-only), the sheets' look (full-window).
@@ -44,7 +44,7 @@ Critical workflows:
 | 13 | Performance | Complete | R | 0 | 0 | 1 | No frame loop; A10 memory plateau at ~70 MB managed; startup not timed |
 | 14 | Security/privacy | Complete | C | 0 | 0 | 1 | No secrets, no network; records unencrypted in app storage (sample) |
 | 15 | Visual quality | Partial | R | 0 | 1 | 2 | Theme/contrast/fonts proven both themes; spec entrance motion and confirm cross-fade not built; dialog chrome (F-015) |
-| 16 | Testing | Partial | R | 0 | 2 | 0 | 50 unit tests pass; CI blocked by Actions budget since 20f459e; no UI test suite |
+| 16 | Testing | Partial | R | 0 | 1 | 0 | 50 unit tests pass locally and in CI; CI green on every head (run 37791335857, 9244b45); no UI test suite |
 
 ## Critical workflows by head
 
@@ -64,14 +64,13 @@ Critical workflows:
 None.
 
 ### Majors
-- [Platform] iOS has no runtime evidence: CI simulator build passed (run 37638904753) before the budget block; no device or simulator run from this host - X.
+- [Platform] iOS has no runtime evidence: CI simulator build passes (runs 37638904753, 37791335857); no device or simulator run from this host - X.
 - [Platform] Android workflows 1, 2, 4, 5 not driven on the emulator - X - drive them with adb before calling Android complete.
 - [Platform] WASM workflows 2-5 not driven; strip pixels on WASM not captured (App MCP screenshot timeout, Edge stale frames) - X.
 - [Platform] Export (FileSavePicker, clipboard) unproven on Android, WASM, iOS (risk R4) - X.
 - [Data] iOS persistence unproven - X.
 - [Accessibility] Tab items expose no automation peer (`utu:TabBarItem`, F-014): a screen reader gets no tab semantics; no screen-reader pass on any head - R.
 - [Visual] Spec motion not built: 280 ms page entrance and the Record-button confirm cross-fade (SPEC Animations); only the strip column fade exists - C.
-- [Testing] CI has not executed since commit 20f459e: "The job was not started because an Actions budget is preventing further use." Last executed runs green (37638904753 all heads incl. iOS; 37640928242) - R.
 - [Testing] No automated UI test suite; runtime proof is the App MCP session log - C.
 
 ### Minors
@@ -101,7 +100,6 @@ None.
 
 ## Unresolved Questions
 - Authentication N/A: typed name + confirmation on a shared tablet, no per-user sign-in. Confirm for a real deployment.
-- CI budget: raise the Actions budget, make the repo public, or accept local evidence for commits after 23ab49a?
 - iOS is in the target list with build-only evidence. Is a simulator/device run in scope?
 - Spec substitutions stand: custom Skia strip instead of LiveCharts2, no audible reminder, CSV instead of PMS integration, no sync, no monitor integration, no patient photo.
 - Sheets as full-window surfaces and platform-chrome dialogs: accept, or invest in a drawer presenter and Material ContentDialogs?
